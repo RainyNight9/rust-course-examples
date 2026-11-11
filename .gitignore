@@ -1,6 +1,4 @@
 target/
 Cargo.lock
 .DS_Store
-articles/
-docs/
 
