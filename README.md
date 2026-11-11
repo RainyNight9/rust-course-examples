@@ -3,6 +3,8 @@
 B 站《Rust 程序设计语言》**22 集中文系统课**的配套代码仓库。课程覆盖中文版全书 21 章，
 这里把视频里出现的代码整理成可以直接运行、对照阅读的工程。
 
+- 视频课程：<https://www.bilibili.com/video/BV1Y8W86qEQr/>
+
 - **119 个可运行示例**：位于 `chNN/examples/`，全部通过 `cargo build --workspace --examples`
 - **59 个故意编译失败示例**：位于 `compile-fail/`，用来对照 E0382、E0499 等真实报错
 - **84 段讲解摘录**：位于 `docs/snippets/`，是命令行、Cargo.toml、控制台输出或课程中的代码片段，
