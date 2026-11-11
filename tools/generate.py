@@ -8,6 +8,7 @@
 输出: rust-course-examples/ 仓库
 """
 import csv
+import html
 import json
 import re
 import shutil
@@ -45,7 +46,7 @@ def stamp(ep, slide):
 
 
 def clean_title(t):
-    return re.sub(r'<[^>]+>', '', t).replace('&amp;', '&').strip()
+    return html.unescape(re.sub(r'<[^>]+>', '', t)).strip()
 
 
 def error_code(err):

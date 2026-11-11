@@ -47,7 +47,7 @@ rustc compile-fail/p05_s15.rs
 | [`p11_s16.rs`](p11_s16.rs) | 末尾别忘包 Ok | P11 04:27 | `E0308` | error[E0308]: mismatched types |
 | [`p11_s18.rs`](p11_s18.rs) | void 里用不了 ? | P11 04:56 | `E0277` | error[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option` |
 | [`p12_s06.rs`](p12_s06.rs) | 缺 Copy 约束 | P12 01:39 | `E0277` | error[E0277]: the trait bound `String: Copy` is not satisfied |
-| [`p12_s09.rs`](p12_s09.rs) | 部分方法看类型 | P12 02:22 | `E0599` | error[E0599]: no method named `x` found for struct `Point<i32, f64>` in the current scope |
+| [`p12_s09.rs`](p12_s09.rs) | 部分方法看类型 | P12 02:22 | `E0599` | error[E0599]: no method named `x` found for struct `Point\<i32, f64\>` in the current scope |
 | [`p12_s19.rs`](p12_s19.rs) | 缺 Display | P12 04:58 | `E0277` | error[E0277]: the trait bound `Config: Display` is not satisfied |
 | [`p13_s03.rs`](p13_s03.rs) | 返回局部变量必然失败 | P13 00:52 | `E0515` | error[E0515]: cannot return value referencing local variable `s` |
 | [`p13_s05.rs`](p13_s05.rs) | 编译器看不出哪个还活着 | P13 01:32 | `E0106` | error[E0106]: missing lifetime specifier |
@@ -61,7 +61,7 @@ rustc compile-fail/p05_s15.rs
 | [`p16_s10.rs`](p16_s10.rs) | 转移的可能是副本 | P16 02:58 | `E0382` | error[E0382]: borrow of moved value: `s` |
 | [`p16_s17.rs`](p16_s17.rs) | 目标类型省不掉 | P16 04:59 | `E0282` | error[E0282]: type annotations needed |
 | [`p18_s06.rs`](p18_s06.rs) | 不装箱算不出大小 | P18 01:50 | `E0072` | error[E0072]: recursive type `List` has infinite size |
-| [`p19_s04.rs`](p19_s04.rs) | Rc 跨线程当场被拦 | P19 01:07 | `E0277` | error[E0277]: `Rc<i32>` cannot be sent between threads safely |
+| [`p19_s04.rs`](p19_s04.rs) | Rc 跨线程当场被拦 | P19 01:07 | `E0277` | error[E0277]: `Rc\<i32\>` cannot be sent between threads safely |
 | [`p20_s17.rs`](p20_s17.rs) | future 往往是 !Unpin | P20 04:35 | `E0277` | error[E0277]: the trait bound `{async block@...}: Unpin` is not satisfied |
 | [`p20_s20.rs`](p20_s20.rs) | 守护让 future 不 Send | P20 05:22 | `E0277` | error[E0277]: future cannot be sent between threads safely |
 | [`p21_s04.rs`](p21_s04.rs) | 私有字段访问报错 | P21 01:09 | `E0616` | error[E0616]: field `balance` of struct `Account` is private |
