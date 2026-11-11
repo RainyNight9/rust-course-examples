@@ -1,0 +1,2098 @@
+[
+ {
+  "ep": 1,
+  "slide": 4,
+  "title": "一段最小的 Rust 程序",
+  "src": "fn main() {\n    let greeting = \"Hello, Rust\";\n    let mut count = 1;\n    count += 1;\n    println!(\"{} / {}\", greeting, count);\n}",
+  "cap": "变量默认不可变，需要修改时必须显式写 <b>mut</b>；<b>println!</b> 是宏。",
+  "err": ""
+ },
+ {
+  "ep": 1,
+  "slide": 7,
+  "title": "一个报错，胜过一次线上事故",
+  "src": "let s1 = String::from(\"hello\");\nlet s2 = s1;\n\nprintln!(\"{s1}, world!\");",
+  "cap": "String 的所有权从 <b>s1</b> 移动到了 <b>s2</b>。",
+  "err": "error[E0382]: borrow of moved value: `s1`"
+ },
+ {
+  "ep": 1,
+  "slide": 12,
+  "title": "零成本抽象<em>不是口号</em>",
+  "src": "let total: i32 = (1..=100)\n    .filter(|n| n % 2 == 0)\n    .map(|n| n * n)\n    .sum();",
+  "cap": "迭代器链在编译后被内联，等价于一个手写的累加循环。",
+  "err": ""
+ },
+ {
+  "ep": 1,
+  "slide": 14,
+  "title": "三个命令就够起步",
+  "src": "$ rustup update stable\n$ cargo new hello_cargo\n$ cd hello_cargo && cargo run\n   Compiling hello_cargo v0.1.0\n    Finished dev profile\nHello, world!",
+  "cap": "Cargo.toml 里 <b>edition = \"2024\"</b>：本系列示例统一按 Rust 2024 Edition 编写。",
+  "err": ""
+ },
+ {
+  "ep": 1,
+  "slide": 20,
+  "title": "同一份数据，<em>两次可变借用</em>",
+  "src": "let mut v = vec![1, 2, 3];\nlet first = &mut v[0];\nlet second = &mut v[1];\n\nprintln!(\"{first} {second}\");",
+  "cap": "同一时刻只允许一个可变借用指向 <b>v</b>。",
+  "err": "error[E0499]: cannot borrow `v` as mutable more than once"
+ },
+ {
+  "ep": 2,
+  "slide": 3,
+  "title": "一条命令装好<em>工具链</em>",
+  "src": "$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\n$ rustc --version\nrustc 1.98.0\n$ cargo --version\ncargo 1.98.0",
+  "cap": "rustup 还能切换 stable / beta / nightly，以及用 <b>rustup doc</b> 打开本地离线文档。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 5,
+  "title": "channel 用<em>三条命令</em>管住",
+  "src": "$ rustup show\n$ rustup update stable\n$ rustup toolchain install nightly\n$ cargo +nightly build\n$ rustup doc --std",
+  "cap": "<b>cargo +nightly</b> 只对这一条命令切换工具链，不改全局默认。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 6,
+  "title": "Hello, World! 里藏着<em>四个细节</em>",
+  "src": "fn main() {\n    println!(\"Hello, world!\");\n}",
+  "cap": "保存为 <b>main.rs</b>，再用 <b>rustc main.rs</b> 编译，会生成同名的可执行文件。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 7,
+  "title": "println! 的<em>占位符</em>不止一种",
+  "src": "fn main() {\n    let name = \"Rust\";\n    let year = 2024;\n    println!(\"Hello, {}!\", name);\n    println!(\"{0} {1}, {0} again\", name, year);\n    println!(\"edition = {year}\");\n    println!(\"debug: {:?}\", vec![1, 2, 3]);\n}",
+  "cap": "<b>{:?}</b> 调 Debug、<b>{}</b> 调 Display；<b>{year}</b> 是内联捕获命名参数。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 10,
+  "title": "rustc 直编的<em>完整命令</em>",
+  "src": "$ rustc main.rs --edition 2024 -o hello\n$ ./hello\nHello, world!",
+  "cap": "省略 <b>--edition</b> 时按 2015 处理，这是手动编译最常踩的坑。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 11,
+  "title": "少写 main 会报 <em>E0601</em>",
+  "src": "fn greet() {\n    println!(\"hi\");\n}",
+  "cap": "要编成可执行文件必须有 <b>fn main()</b>；库 crate 不需要入口。",
+  "err": "error[E0601]: main function not found in crate"
+ },
+ {
+  "ep": 2,
+  "slide": 12,
+  "title": "cargo new 生成了什么",
+  "src": "[package]\nname = \"hello_cargo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[dependencies]",
+  "cap": "项目目录：<b>src/main.rs</b> + <b>Cargo.toml</b> + <b>Cargo.lock</b>（锁文件由 Cargo 自动维护）。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 14,
+  "title": "锁文件由 Cargo <em>自动维护</em>",
+  "src": "$ cargo new demo && cd demo\n$ ls            # 此时还没有 Cargo.lock\n$ cargo build   # 第一次构建后生成 Cargo.lock\n$ cargo update  # 按清单规则刷新精确版本",
+  "cap": "改依赖版本请改 <b>Cargo.toml</b> 再 <b>cargo update</b>，别手改 lock。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 17,
+  "title": "用 cargo tree 查<em>依赖树</em>",
+  "src": "$ cargo tree\n$ cargo tree -d        # 找出重复版本\n$ cargo tree -i rand   # 反查谁依赖了 rand",
+  "cap": "<b>cargo tree</b> 只读依赖图、不改任何文件，排查版本问题先跑它。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 18,
+  "title": "六个命令覆盖<em>日常开发</em>",
+  "src": "$ cargo new hello_cargo\n$ cargo check        # 只检查，最快\n$ cargo build        # 编译，产出 target/debug/\n$ cargo run          # 编译 + 运行\n$ cargo test         # 跑测试\n$ cargo fmt && cargo clippy",
+  "cap": "先把 <b>cargo check</b> 用熟，能省掉大量等待编译的时间。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 20,
+  "title": "惯用法交给 <em>clippy</em> 盯",
+  "src": "fn main() {\n    let flag = true;\n    if flag == true {\n        println!(\"on\");\n    }\n    let v: Vec<i32> = vec![1, 2, 3];\n    if v.len() == 0 {\n        println!(\"empty\");\n    }\n}",
+  "cap": "clippy 建议改成 <b>if flag</b> 和 <b>v.is_empty()</b>；warning 不是编译错误。",
+  "err": ""
+ },
+ {
+  "ep": 2,
+  "slide": 21,
+  "title": "发布前打开<em>优化</em>",
+  "src": "$ cargo build --release\n   Compiling hello_cargo v0.1.0\n    Finished release profile\n$ ./target/release/hello_cargo\nHello, world!",
+  "cap": "dev 与 release 是两套 <b>profile</b>，第 14 章会讲怎么自定义优化级别。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 4,
+  "title": "把五步装进<em>一个 main</em>",
+  "src": "use rand::Rng;\nuse std::cmp::Ordering;\nuse std::io;\n\nfn main() {\n    let secret: u32 = rand::thread_rng().gen_range(1..=100);\n    loop {\n        println!(\"猜一个 1 到 100 的数字：\");\n        let mut guess = String::new();\n        io::stdin()\n            .read_line(&mut guess)\n            .expect(\"读取失败\");\n        let guess: u32 = match guess.trim().parse() {\n            Ok(num) => num,\n            Err(_) => continue,\n        };\n        match guess.cmp(&secret) {\n            Ordering::Less => println!(\"太小\"),\n            Ordering::Greater => println!(\"太大\"),\n            Ordering::Equal => {\n                println!(\"猜中\");\n                break;\n            }\n        }\n    }\n}",
+  "cap": "注意 <b>secret: u32</b> 和 parse 出的 u32 类型一致，<b>cmp</b> 才能比较。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 6,
+  "title": "&amp;mut 第一次出现",
+  "src": "use std::io;\n\nfn main() {\n    println!(\"猜一个 1 到 100 之间的数字：\");\n    let mut guess = String::new();\n    io::stdin()\n        .read_line(&mut guess)\n        .expect(\"读取输入失败\");\n    println!(\"你猜的是：{guess}\");\n}",
+  "cap": "这里先记住 <b>&amp;mut guess</b> 是「可变借用」，第 4 章会完整解释它。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 7,
+  "title": "expect 底下是<em>Result</em>",
+  "src": "use std::io;\n\nfn main() {\n    let mut guess = String::new();\n    let n = io::stdin()\n        .read_line(&mut guess)\n        .expect(\"读取失败\");\n    println!(\"读了 {n} 个字节：{guess:?}\");\n}",
+  "cap": "<b>read_line</b> 返回 Result&lt;usize, io::Error&gt;；<b>expect</b> 在失败时 panic。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 9,
+  "title": "Cargo.toml 加一行就行",
+  "src": "# Cargo.toml\n[dependencies]\nrand = \"0.8\"\n\n// src/main.rs\nuse rand::Rng;\n\nlet secret_number = rand::thread_rng().gen_range(1..=100);",
+  "cap": "<b>1..=100</b> 是包含端点的范围；trait 必须引入作用域，方法才可用。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 10,
+  "title": "rand 的 API 随<em>版本</em>变",
+  "src": "// Cargo.toml 里: rand = \"0.8\"\nuse rand::Rng;\n\nfn main() {\n    let mut rng = rand::thread_rng();\n    let n: u32 = rng.gen_range(1..=100);\n    let m: u32 = rng.gen_range(50..=60);\n    println!(\"{n} {m}\");\n}",
+  "cap": "0.8 用 <b>thread_rng + gen_range</b>；<b>use rand::Rng</b> 必须引入 trait 方法才可见。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 12,
+  "title": "Ordering 有三个分支",
+  "src": "use std::cmp::Ordering;\n\nmatch guess.cmp(&secret_number) {\n    Ordering::Less    => println!(\"太小了！\"),\n    Ordering::Greater => println!(\"太大了！\"),\n    Ordering::Equal   => {\n        println!(\"猜中了！\");\n        break;\n    }\n}",
+  "cap": "注意 <b>guess 是 String、secret_number 是整数</b>，所以下一步必须先做类型转换。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 13,
+  "title": "漏一个分支就<em>编译不过</em>",
+  "src": "use std::cmp::Ordering;\n\nfn label(o: Ordering) -> &'static str {\n    match o {\n        Ordering::Less => \"small\",\n        Ordering::Greater => \"big\",\n    }\n}",
+  "cap": "<b>_</b> 可作通配分支，但枚举最好逐个列全，让编译器帮你查漏。",
+  "err": "error[E0004]: non-exhaustive patterns: `Ordering::Equal` not covered"
+ },
+ {
+  "ep": 3,
+  "slide": 15,
+  "title": "字符串不是数字",
+  "src": "let guess: u32 = guess\n    .trim()\n    .parse()\n    .expect(\"请输入一个数字！\");",
+  "cap": "类型标注 <b>: u32</b> 不能省：parse 需要知道要转成哪种数字类型。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 16,
+  "title": "不写 : u32 就<em>推不出来</em>",
+  "src": "fn main() {\n    let text = \"42\";\n    let n = text.parse().unwrap();\n    println!(\"{n}\");\n}",
+  "cap": "补上 <b>let n: u32 = ...</b> 或用 turbofish <b>parse::&lt;u32&gt;()</b> 即可。",
+  "err": "error[E0282]: type annotations needed for the result of `parse`"
+ },
+ {
+  "ep": 3,
+  "slide": 18,
+  "title": "用 match 取代 expect",
+  "src": "let guess: u32 = match guess.trim().parse() {\n    Ok(num) => num,\n    Err(_)  => continue,\n};",
+  "cap": "<b>Result&lt;T, E&gt;</b> 是 Rust 错误处理的核心，第 9 章会系统展开。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 20,
+  "title": "continue 跳的是<em>整个 loop</em>",
+  "src": "// 以下是 loop 循环体里的片段\nlet guess: u32 = match guess.trim().parse() {\n    Ok(num) => num,\n    Err(_) => continue,\n};\n// 只有解析成功才会走到这里\nprintln!(\"你猜的是 {guess}\");",
+  "cap": "<b>continue</b> 回到 loop 顶部；换成 <b>break</b> 会直接结束游戏。",
+  "err": ""
+ },
+ {
+  "ep": 3,
+  "slide": 21,
+  "title": "loop + break",
+  "src": "loop {\n    let mut guess = String::new();\n    io::stdin().read_line(&mut guess)\n        .expect(\"读取失败\");\n    let guess: u32 = match guess.trim().parse() {\n        Ok(num) => num,\n        Err(_)  => continue,\n    };\n    // ... 比较，猜中则 break\n}",
+  "cap": "这里又用了一次 <b>遮蔽</b>：新的 guess 是 u32，覆盖掉上面那个 String。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 3,
+  "title": "let 与 <em>mut</em>",
+  "src": "let x = 5;\n// x = 6;   // 编译错误：不能给不可变变量赋值两次\n\nlet mut y = 5;\ny = 6;      // OK",
+  "cap": "错误码 <b>E0384</b>：cannot assign twice to immutable variable。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 4,
+  "title": "想改必须先<em>说一声</em>",
+  "src": "fn main() {\n    let x = 5;\n    x = 6;\n    println!(\"{x}\");\n}",
+  "cap": "改成 <b>let mut x = 5;</b> 即可；报错还会指出第一次赋值的位置。",
+  "err": "error[E0384]: cannot assign twice to immutable variable `x`"
+ },
+ {
+  "ep": 4,
+  "slide": 6,
+  "title": "和 mut 不是一回事",
+  "src": "let spaces = \"   \";\nlet spaces = spaces.len();   // 类型从 &str 变成 usize\n\nlet guess: u32 = guess.trim().parse().expect(\"数字\");",
+  "cap": "<b>遮蔽会创建新变量</b>，旧值被覆盖；mut 是在同一块内存上改值。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 7,
+  "title": "同名，却是<em>新的绑定</em>",
+  "src": "fn main() {\n    let spaces = \"   \";\n    let spaces = spaces.len();\n    let mut x = 5;\n    // x = \"five\";   // 错误：mut 不能换类型\n    println!(\"{spaces} {x}\");\n}",
+  "cap": "<b>遮蔽可换类型</b>（&str 变 usize）；<b>mut 不能</b>，改类型会报类型不匹配。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 11,
+  "title": "两种构建<em>溢出不同</em>",
+  "src": "fn main() {\n    let a: u8 = 255;\n    // debug 构建下这一行会 panic\n    let b = a + 1;\n    println!(\"{b}\");\n    println!(\"{:?}\", a.checked_add(1));\n}",
+  "cap": "<b>checked_add</b> 返回 Option，溢出时是 None，语义最明确。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 13,
+  "title": "元组和<em>数组</em>",
+  "src": "let tup: (i32, f64, u8) = (500, 6.4, 1);\nlet (x, y, z) = tup;          // 解构\nlet five_hundred = tup.0;\n\nlet a = [1, 2, 3, 4, 5];\nlet first = a[0];",
+  "cap": "数组越界会在<em>运行时</em> panic —— 这是 Rust 内存安全的一道防线。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 14,
+  "title": "编译期不管，<em>运行时</em>拦",
+  "src": "fn main() {\n    let a = [1, 2, 3, 4, 5];\n    let index = 10;\n    // println!(\"{}\", a[index]);     // 越界会 panic\n    println!(\"{:?}\", a.get(index));  // None，不崩溃\n}",
+  "cap": "<b>a[index]</b> 越界会 panic；<b>a.get(index)</b> 返回 Option，可以优雅处理。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 15,
+  "title": "参数和返回值都要<em>标类型</em>",
+  "src": "fn plus_one(x: i32) -> i32 {\n    x + 1\n}\n\nfn main() {\n    let n = plus_one(5);\n    println!(\"{n}\");   // 6\n}",
+  "cap": "函数体最后一行 <b>没有分号</b>，它是表达式，值会作为返回值。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 16,
+  "title": "参数不写<em>类型</em>不行",
+  "src": "fn double(x: i32) -> i32 {\n    x * 2\n}\n\nfn main() {\n    let r = double(\"3\");\n    println!(\"{r}\");\n}",
+  "cap": "签名写死 <b>i32</b>，传字符串切片会报 E0308；类型标注不能省。",
+  "err": "error[E0308]: mismatched types, expected `i32`, found `&str`"
+ },
+ {
+  "ep": 4,
+  "slide": 17,
+  "title": "一个分号改变<em>语义</em>",
+  "src": "fn ok() -> i32 {\n    5          // 表达式 → 返回 5\n}\n\nfn broken() -> i32 {\n    5;         // 语句 → 返回 ()\n}",
+  "cap": "错误：<b>expected i32, found ()</b>。块表达式 {} 的最后一行同理。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 18,
+  "title": "加分号，值就<em>没了</em>",
+  "src": "fn add_one(x: i32) -> i32 {\n    x + 1;\n}",
+  "cap": "去掉末尾分号返回 i32；留着分号返回 <b>()</b>，与签名冲突。",
+  "err": "error[E0308]: mismatched types, expected `i32`, found `()`"
+ },
+ {
+  "ep": 4,
+  "slide": 20,
+  "title": "if / loop / while / for",
+  "src": "let n = if condition { 5 } else { 6 };\n\nlet mut counter = 0;\nlet result = loop {\n    counter += 1;\n    if counter == 10 { break counter * 2; }\n};\n\nfor i in (1..4).rev() { println!(\"{i}\"); }",
+  "cap": "<b>if 是表达式</b>，所以可以直接给 let 赋值，两个分支类型必须一致。",
+  "err": ""
+ },
+ {
+  "ep": 4,
+  "slide": 21,
+  "title": "遍历不靠<em>手写下标</em>",
+  "src": "fn main() {\n    for i in 1..4 {\n        println!(\"{i}\");\n    }\n    for (idx, ch) in \"abc\".chars().enumerate() {\n        println!(\"{idx}: {ch}\");\n    }\n    for i in (1..6).rev().step_by(2) {\n        println!(\"{i}\");\n    }\n}",
+  "cap": "<b>enumerate</b> 拿下标、<b>rev</b> 倒序、<b>step_by</b> 控步长，边界都由迭代器管。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 8,
+  "title": "深拷贝默认<em>不做</em>",
+  "src": "fn main() {\n    let s1 = String::from(\"hello\");\n    let s2 = s1.clone();   // 显式深拷贝堆数据\n    println!(\"s1 = {s1}, s2 = {s2}\");\n}",
+  "cap": "<b>clone</b> 会真的再申请一块堆内存；普通赋值不会，只会移动。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 11,
+  "title": "右花括号那里<em>自动释放</em>",
+  "src": "{\n    let s = String::from(\"hello\");\n    println!(\"{s}\");\n}   // 作用域结束 → 自动调用 drop",
+  "cap": "这个模式在 C++ 里叫 <b>RAII</b>：资源获取即初始化。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 12,
+  "title": "在最后一个<em>使用点</em>之后",
+  "src": "fn main() {\n    let outer = String::from(\"out\");\n    {\n        let inner = String::from(\"in\");\n        println!(\"{inner}\");\n    } // inner 在这里 drop\n    println!(\"{outer}\");\n} // outer 在这里 drop",
+  "cap": "内层右花括号释放 inner，外层右花括号才释放 outer，顺序与创建相反。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 15,
+  "title": "let s2 = s1 之后",
+  "src": "let s1 = String::from(\"hello\");\nlet s2 = s1;\nprintln!(\"{s1}, world!\");",
+  "cap": "只复制栈上的指针、长度、容量；<b>s1 立即失效</b>，只有 s2 负责释放。",
+  "err": "error[E0382]: borrow of moved value: `s1`"
+ },
+ {
+  "ep": 5,
+  "slide": 16,
+  "title": "报错会告诉你<em>在哪移动</em>",
+  "src": "fn main() {\n    let s1 = String::from(\"hello\");\n    let s2 = s1;\n    println!(\"{s1}, world!\");\n}",
+  "cap": "报错会指出 <b>s1 在赋值那句被移动</b>，并提示可以 clone 或改用借用。",
+  "err": "error[E0382]: borrow of moved value: `s1`"
+ },
+ {
+  "ep": 5,
+  "slide": 17,
+  "title": "取走一个字段也<em>算移动</em>",
+  "src": "#[derive(Debug)]\nstruct User { name: String, age: u8 }\n\nfn main() {\n    let u = User { name: String::from(\"A\"), age: 18 };\n    let n = u.name;          // name 被移动出去\n    println!(\"{n}, {u:?}\");  // u 整体已不可再用\n}",
+  "cap": "<b>u.name</b> 被移走后 u 只剩 age 可用；改成借用 <b>&u.name</b> 即可。",
+  "err": "error[E0382]: borrow of partially moved value: `u`"
+ },
+ {
+  "ep": 5,
+  "slide": 18,
+  "title": "要复制，就<em>说清楚</em>",
+  "src": "let s2 = s1.clone();   // 深拷贝堆数据，有开销\n\nlet x = 5;\nlet y = x;             // i32 实现 Copy，x 仍有效",
+  "cap": "实现了 <b>Drop</b> 的类型不能再实现 <b>Copy</b>，两者语义冲突。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 21,
+  "title": "函数会<em>拿走所有权</em>",
+  "src": "fn takes_ownership(s: String) { println!(\"{s}\"); }\nfn makes_copy(x: i32)         { println!(\"{x}\"); }\n\nlet s = String::from(\"hello\");\ntakes_ownership(s);   // s 被移动\nlet x = 5;\nmakes_copy(x);        // x 仍可用",
+  "cap": "每次都「传进去再返回来」太啰嗦 —— 这正是下一集引用要解决的问题。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 22,
+  "title": "进函数、出函数<em>都一样</em>",
+  "src": "fn consume(s: String) -> usize { s.len() }\n\nfn main() {\n    let s = String::from(\"hello\");\n    let n = consume(s);       // s 被移动进函数\n    // println!(\"{s}\");       // 这里再用会报 E0382\n    println!(\"长度 {n}\");\n}",
+  "cap": "<b>consume(s)</b> 拿走所有权；想保留 s 就传 <b>&s</b>，或让函数把 s 返回来。",
+  "err": ""
+ },
+ {
+  "ep": 5,
+  "slide": 23,
+  "title": "Copy 和 Move <em>摆一起看</em>",
+  "src": "fn takes_int(x: i32) { println!(\"{x}\"); }\nfn takes_str(s: String) { println!(\"{s}\"); }\n\nfn main() {\n    let x = 5;\n    takes_int(x);\n    println!(\"{x}\");            // OK：i32 是 Copy\n    let s = String::from(\"hi\");\n    takes_str(s);\n    // println!(\"{s}\");         // 报错：String 已移动\n}",
+  "cap": "差异只由 <b>Copy</b> 决定：x 可用、s 失效；下一集用引用补上这个缺口。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 3,
+  "title": "每次都要<em>还回来</em>？",
+  "src": "fn calculate_length(s: String) -> (String, usize) {\n    let length = s.len();\n    (s, length)      // 不得不把 s 还回去\n}",
+  "cap": "需要的是一种「<b>用一下但不拥有</b>」的机制。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 4,
+  "title": "不用再<em>还回来</em>了",
+  "src": "fn calculate_length(s: &String) -> usize {\n    s.len()\n} // s 是引用，不拥有值，这里不会 drop 数据\n\nfn main() {\n    let s = String::from(\"hello\");\n    let n = calculate_length(&s);\n    println!(\"{s} 有 {n} 个字节\");   // s 仍可用\n}",
+  "cap": "参数 <b>&String</b>、实参 <b>&s</b> 成对出现；借用结束，s 完好。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 6,
+  "title": "&amp; 不取得<em>所有权</em>",
+  "src": "fn calculate_length(s: &String) -> usize {\n    s.len()\n}\n\nlet s1 = String::from(\"hello\");\nlet len = calculate_length(&s1);\nprintln!(\"{s1} 的长度是 {len}\");   // s1 仍可用",
+  "cap": "创建引用的动作叫 <b>借用</b>；与 &amp; 相对的解引用运算符是 *。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 7,
+  "title": "点号帮你<em>省了星号</em>",
+  "src": "fn show(s: &String) {\n    println!(\"{}\", s.len());       // 自动解引用\n    println!(\"{}\", (*s).len());    // 等价的显式写法\n}\n\nfn main() {\n    let s = String::from(\"hello\");\n    show(&s);\n}",
+  "cap": "<b>s.len()</b> 与 <b>(*s).len()</b> 等价；点号会自动解引用与再借用。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 9,
+  "title": "想改，三处都写 <em>mut</em>",
+  "src": "fn change(s: &mut String) {\n    s.push_str(\", world\");\n}\n\nlet mut s = String::from(\"hello\");\nchange(&mut s);",
+  "cap": "不可变引用可以有多个；<b>可变引用在同一时刻只能有一个</b>。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 10,
+  "title": "三处必须<em>对齐</em>",
+  "src": "fn push(s: &mut String) { s.push_str(\"!\"); }\n\nfn main() {\n    let s = String::from(\"hi\");   // 忘了 mut\n    push(&mut s);\n}",
+  "cap": "把声明改成 <b>let mut s</b> 即可；三处 mut 缺一不可。",
+  "err": "error[E0596]: cannot borrow `s` as mutable, as it is not declared as mutable"
+ },
+ {
+  "ep": 6,
+  "slide": 13,
+  "title": "两个可变引用<em>撞一起</em>",
+  "src": "fn main() {\n    let mut v = vec![1, 2, 3];\n    let a = &mut v[0];\n    let b = &mut v[1];\n    println!(\"{a} {b}\");\n}",
+  "cap": "a 后面还要用，与 b 的借用重叠；若 a 提前结束就不冲突。",
+  "err": "error[E0499]: cannot borrow `v` as mutable more than once at a time"
+ },
+ {
+  "ep": 6,
+  "slide": 14,
+  "title": "一读一写也<em>不行</em>",
+  "src": "fn main() {\n    let mut v = vec![1, 2, 3];\n    let first = &v[0];\n    v.push(4);\n    println!(\"{first}\");\n}",
+  "cap": "first 的只读借用还没结束就追加；先打印它，或先追加再借用。",
+  "err": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable"
+ },
+ {
+  "ep": 6,
+  "slide": 17,
+  "title": "返回值里<em>没有可借的东西</em>",
+  "src": "fn dangle() -> &String {\n    let s = String::from(\"hello\");\n    &s\n}",
+  "cap": "正确写法：<b>fn no_dangle() -> String { String::from(\"hello\") }</b>",
+  "err": "this function's return type contains a borrowed value, but there is no value for it to be borrowed from"
+ },
+ {
+  "ep": 6,
+  "slide": 18,
+  "title": "返回的引用<em>没来源</em>",
+  "src": "fn dangle() -> &String {\n    let s = String::from(\"hello\");\n    &s\n}",
+  "cap": "正解是 <b>fn no_dangle() -> String</b>：返回所有权，而不是返回局部引用。",
+  "err": "error[E0106]: missing lifetime specifier"
+ },
+ {
+  "ep": 6,
+  "slide": 20,
+  "title": "引用<em>一段</em>数据",
+  "src": "let s = String::from(\"hello world\");\nlet hello = &s[0..5];     // &str\nlet world = &s[6..11];\n\nfn first_word(s: &str) -> &str {\n    let bytes = s.as_bytes();\n    for (i, &item) in bytes.iter().enumerate() {\n        if item == b' ' { return &s[0..i]; }\n    }\n    &s[..]\n}",
+  "cap": "函数参数写成 <b>&amp;str</b>，String 和字符串字面量都能传进去，比 &amp;String 更通用。",
+  "err": ""
+ },
+ {
+  "ep": 6,
+  "slide": 21,
+  "title": "参数写 <em>&str</em> 更好",
+  "src": "fn first_word(s: &str) -> &str {\n    match s.find(' ') {\n        Some(i) => &s[..i],\n        None => s,\n    }\n}\n\nfn main() {\n    let owned = String::from(\"hello world\");\n    println!(\"{}\", first_word(&owned));    // &String 转成 &str\n    println!(\"{}\", first_word(\"hi rust\")); // 字面量本身就是 &str\n}",
+  "cap": "<b>&str</b> 同时接字符串引用与字面量；切片务必落在<em>字符边界</em>上。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 3,
+  "title": "元组藏不住的<em>顺序</em>",
+  "src": "fn main() {\n    // 30 是宽还是高？只能靠注释和记忆\n    let rect = (30, 50);\n    let area = rect.0 * rect.1;\n    println!(\"面积 {area}\");\n}",
+  "cap": "用 <b>.0</b>、<b>.1</b> 取值，含义全靠人记；换成具名字段，顺序就不再重要。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 6,
+  "title": "struct 的<em>基本写法</em>",
+  "src": "struct User {\n    active: bool,\n    username: String,\n    sign_in_count: u64,\n}\n\nlet mut user1 = User {\n    active: true,\n    username: String::from(\"alice\"),\n    sign_in_count: 1,\n};\nuser1.sign_in_count += 1;",
+  "cap": "字段类型用 <b>String</b> 而不是 &amp;str，让结构体拥有自己的数据，不依赖外部引用的生命周期。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 7,
+  "title": "字段为什么<em>报错</em>",
+  "src": "struct User {\n    username: &str,\n    sign_in_count: u64,\n}\n\nfn main() {\n    let name = String::from(\"alice\");\n    let u = User { username: &name, sign_in_count: 1 };\n    println!(\"{}\", u.username);\n}",
+  "cap": "结构体里的引用必须带生命周期参数，否则编译不过。",
+  "err": "error[E0106]: missing lifetime specifier"
+ },
+ {
+  "ep": 7,
+  "slide": 9,
+  "title": "两个<em>省事语法</em>",
+  "src": "fn build_user(username: String) -> User {\n    User {\n        active: true,\n        username,          // 字段初始化简写\n        sign_in_count: 1,\n    }\n}\n\nlet user2 = User {\n    username: String::from(\"bob\"),\n    ..user1             // 其余字段从 user1 移动过来\n};",
+  "cap": "注意 <b>..user1 会移动</b> String 字段，之后 user1 里被移动的字段就不能用了。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 10,
+  "title": "更新语法的<em>部分移动</em>",
+  "src": "struct User {\n    active: bool,\n    username: String,\n    sign_in_count: u64,\n}\n\nfn main() {\n    let user1 = User {\n        active: true,\n        username: String::from(\"alice\"),\n        sign_in_count: 1,\n    };\n    let user2 = User {\n        username: String::from(\"bob\"),\n        ..user1\n    };\n    println!(\"{}\", user1.active);       // bool 是 Copy，还能用\n    println!(\"{}\", user1.username);     // 已被移动\n}",
+  "cap": "String 字段被搬走，<b>Copy</b> 字段留下，原实例只剩「半条命」。",
+  "err": "error[E0382]: borrow of moved value: `user1.username`"
+ },
+ {
+  "ep": 7,
+  "slide": 13,
+  "title": "打印结构体要<em>Debug</em>",
+  "src": "struct Rectangle { width: u32, height: u32 }\n\nfn main() {\n    let rect = Rectangle { width: 30, height: 50 };\n    println!(\"rect = {:?}\", rect);\n}",
+  "cap": "加 <b>#[derive(Debug)]</b> 就能用 {:?} 打印。",
+  "err": "error[E0277]: `Rectangle` doesn't implement `Debug`"
+ },
+ {
+  "ep": 7,
+  "slide": 15,
+  "title": "impl 块里写<em>方法</em>",
+  "src": "struct Rectangle { width: u32, height: u32 }\n\nimpl Rectangle {\n    fn area(&self) -> u32 {\n        self.width * self.height\n    }\n    fn can_hold(&self, other: &Rectangle) -> bool {\n        self.width > other.width && self.height > other.height\n    }\n}\n\nlet rect = Rectangle { width: 30, height: 50 };\nrect.area();",
+  "cap": "<b>&amp;self</b> 是 <b>self: &amp;Self</b> 的简写，表示不可变借用当前实例。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 16,
+  "title": "可变方法<em>要声明</em>",
+  "src": "struct Rectangle { width: u32, height: u32 }\n\nimpl Rectangle {\n    fn widen(&mut self, n: u32) {\n        self.width += n;\n    }\n}\n\nfn main() {\n    let rect = Rectangle { width: 30, height: 50 };\n    rect.widen(10);\n}",
+  "cap": "把 <b>let rect</b> 改成 <b>let mut rect</b> 即可。",
+  "err": "error[E0596]: cannot borrow `rect` as mutable, as it is not declared as mutable"
+ },
+ {
+  "ep": 7,
+  "slide": 17,
+  "title": "谁会<em>拿走</em>实例",
+  "src": "struct Rectangle { width: u32, height: u32 }\n\nimpl Rectangle {\n    fn into_width(self) -> u32 { self.width }\n    fn area(&self) -> u32 { self.width * self.height }\n}\n\nfn main() {\n    let rect = Rectangle { width: 30, height: 50 };\n    println!(\"{}\", rect.into_width());\n    println!(\"{}\", rect.area());   // rect 已被消耗\n}",
+  "cap": "<b>self</b> 按值接收会消耗实例，之后再借用就报错。",
+  "err": "error[E0382]: borrow of moved value: `rect`"
+ },
+ {
+  "ep": 7,
+  "slide": 20,
+  "title": "没有 self 的<em>那些函数</em>",
+  "src": "impl Rectangle {\n    fn square(size: u32) -> Self {\n        Self { width: size, height: size }\n    }\n}\n\nlet sq = Rectangle::square(10);",
+  "cap": "一个类型可以有<em>多个 impl 块</em>；<b>Self</b> 指代当前 impl 的类型。",
+  "err": ""
+ },
+ {
+  "ep": 7,
+  "slide": 21,
+  "title": "点号调不了<em>关联函数</em>",
+  "src": "struct Rectangle { width: u32, height: u32 }\n\nimpl Rectangle {\n    fn square(size: u32) -> Self {\n        Self { width: size, height: size }\n    }\n}\n\nfn main() {\n    let rect = Rectangle { width: 30, height: 50 };\n    let sq = rect.square(10);   // 关联函数不能用点号\n}",
+  "cap": "改成 <b>Rectangle::square(10)</b> 才对。",
+  "err": "error[E0599]: no method named `square` found for struct `Rectangle` in the current scope"
+ },
+ {
+  "ep": 8,
+  "slide": 7,
+  "title": "每个变体<em>自带数据</em>",
+  "src": "enum Message {\n    Quit,\n    Move { x: i32, y: i32 },\n    Write(String),\n    ChangeColor(i32, i32, i32),\n}\n\nimpl Message {\n    fn call(&self) { /* 按变体分别处理 */ }\n}",
+  "cap": "变体可以直接用 <b>::</b> 访问，比如 <b>Message::Write(String::from(\"hi\"))</b>。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 8,
+  "title": "四种变体<em>构造一遍</em>",
+  "src": "#[derive(Debug)]\nenum Message {\n    Quit,\n    Move { x: i32, y: i32 },\n    Write(String),\n    ChangeColor(i32, i32, i32),\n}\n\nfn main() {\n    let m1 = Message::Quit;\n    let m2 = Message::Move { x: 3, y: 4 };\n    let m3 = Message::Write(String::from(\"hello\"));\n    let m4 = Message::ChangeColor(255, 0, 128);\n    println!(\"{m1:?} / {m2:?} / {m3:?} / {m4:?}\");\n}",
+  "cap": "变体一律用 <b>枚举名::变体名</b> 构造；<b>{:?}</b> 打印需要 derive Debug。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 10,
+  "title": "Rust 没有 <em>null</em>",
+  "src": "enum Option<T> {\n    Some(T),\n    None,\n}\n\nlet some_number = Some(5);\nlet absent: Option<i32> = None;",
+  "cap": "Option 和它的变体在预导入模块里，<b>不需要写 Option::</b> 前缀就能用。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 11,
+  "title": "按值匹配会<em>搬走</em>数据",
+  "src": "fn main() {\n    let name: Option<String> = Some(String::from(\"alice\"));\n    if let Some(n) = name {\n        println!(\"拿到 {n}\");\n    }\n    println!(\"{:?}\", name);   // name 已被移动\n}",
+  "cap": "<b>Some(n)</b> 按值绑定会移走内部的 String。",
+  "err": "error[E0382]: borrow of moved value: `name`"
+ },
+ {
+  "ep": 8,
+  "slide": 13,
+  "title": "必须<em>穷尽</em>所有可能",
+  "src": "fn value_in_cents(coin: Coin) -> u8 {\n    match coin {\n        Coin::Penny => 1,\n        Coin::Nickel => 5,\n        Coin::Dime => 10,\n        Coin::Quarter(state) => {\n            println!(\"来自 {state:?} 的 25 分币\");\n            25\n        }\n    }\n}",
+  "cap": "分支里可以直接<em>绑定</em>变体携带的数据，比如这里的 state。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 14,
+  "title": "漏一个分支<em>就报错</em>",
+  "src": "enum Direction { Up, Down, Left, Right }\n\nfn main() {\n    let d = Direction::Up;\n    match d {\n        Direction::Up => println!(\"上\"),\n        Direction::Down => println!(\"下\"),\n        Direction::Left => println!(\"左\"),\n    }\n}",
+  "cap": "漏掉 <b>Right</b>，编译器拒绝编译。",
+  "err": "error[E0004]: non-exhaustive patterns: `Direction::Right` not covered"
+ },
+ {
+  "ep": 8,
+  "slide": 15,
+  "title": "分支类型<em>要统一</em>",
+  "src": "enum Coin { Penny, Nickel, Dime, Quarter }\n\nfn main() {\n    let coin = Coin::Quarter;\n    let value = match coin {\n        Coin::Penny => 1,\n        Coin::Nickel => 5,\n        Coin::Dime => 10,\n        Coin::Quarter => String::from(\"25\"),\n    };\n    println!(\"{value}\");\n}",
+  "cap": "前三支是整数，最后一支是 <b>String</b>，类型冲突。",
+  "err": "error[E0308]: `match` arms have incompatible types"
+ },
+ {
+  "ep": 8,
+  "slide": 16,
+  "title": "_ 和 <em>other</em>",
+  "src": "let dice = 9;\nmatch dice {\n    3 => add_fancy_hat(),\n    7 => remove_fancy_hat(),\n    other => move_player(other),\n}\n\nmatch some_value {\n    Some(x) => println!(\"拿到 {x}\"),\n    None    => println!(\"什么都没有\"),\n}",
+  "cap": "<b>_</b> 匹配但不绑定值；<b>other</b> 会把值绑到变量上供分支使用。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 17,
+  "title": "模式的<em>三种</em>进阶",
+  "src": "enum Message {\n    Quit,\n    Move { x: i32, y: i32 },\n    Write(String),\n}\n\nfn main() {\n    let msg = Message::Move { x: 10, y: -3 };\n    match msg {\n        Message::Move { x, .. } if x > 0 => println!(\"向右 {x}\"),\n        Message::Move { .. } => println!(\"没向右\"),\n        Message::Write(s) => println!(\"文本 {s}\"),\n        Message::Quit => println!(\"退出\"),\n    }\n    let note = Message::Write(String::from(\"hi\"));\n    println!(\"是 Write 吗：{}\", matches!(note, Message::Write(_)));\n}",
+  "cap": "<b>if 守卫</b>、<b>.. 忽略</b>、<b>matches!</b> 三种写法一次看全。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 18,
+  "title": "if let 与 <em>let else</em>",
+  "src": "if let Some(3) = config_max {\n    println!(\"最大值被设为 3\");\n}\n\nlet Some(x) = some_option else {\n    return;      // 不匹配必须提前离开\n};\nprintln!(\"{x}\");",
+  "cap": "if let 是语法糖，<b>仍可搭配 else</b>；代价是放弃了穷尽检查。",
+  "err": ""
+ },
+ {
+  "ep": 8,
+  "slide": 21,
+  "title": "加变体后<em>静默漏掉</em>",
+  "src": "enum Status { Running, Failed(String) }\n\nfn main() {\n    // 需求变了：状态多出 Failed\n    let s = Status::Failed(String::from(\"超时\"));\n    // 只关心 Running，新增的 Failed 会被静默忽略\n    if let Status::Running = s {\n        println!(\"正在运行\");\n    }\n    // 换成 match 漏分支就会编译失败\n    println!(\"程序照常结束，失败状态被漏掉了\");\n}",
+  "cap": "<b>if let</b> 不加通配也不报错，新变体被悄悄放过。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 4,
+  "title": "把 <em>crate 根</em>钉死",
+  "src": "# Cargo.toml\n[package]\nname = \"restaurant\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n// src/lib.rs —— 库 crate 的根，模块树从这里长出来\npub fn add(left: u64, right: u64) -> u64 {\n    left + right\n}",
+  "cap": "一个包由 <b>Cargo.toml</b> 定义，<b>src/lib.rs</b> 是库 crate 的根。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 7,
+  "title": "从 crate 根<em>长出来</em>",
+  "src": "mod front_of_house {\n    mod hosting {\n        fn add_to_waitlist() {}\n    }\n}\n\n// 绝对路径\ncrate::front_of_house::hosting::add_to_waitlist();\n// 相对路径\nfront_of_house::hosting::add_to_waitlist();",
+  "cap": "模块默认<em>私有</em>：父子之间可见性规则不同，外部访问需要 pub。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 8,
+  "title": "私有模块<em>报 E0603</em>",
+  "src": "mod outer {\n    mod inner {\n        pub fn secret() {}\n    }\n}\n\nfn main() {\n    crate::outer::inner::secret();\n}",
+  "cap": "<b>inner</b> 是 outer 的私有子模块，父级访问不到。",
+  "err": "error[E0603]: module `inner` is private"
+ },
+ {
+  "ep": 9,
+  "slide": 10,
+  "title": "pub 只<em>打开一层</em>",
+  "src": "mod front_of_house {\n    pub mod hosting {\n        pub fn add_to_waitlist() {}\n    }\n}\n\npub fn eat_at_restaurant() {\n    hosting::add_to_waitlist();\n}",
+  "cap": "<b>pub struct</b> 只让类型公开，字段要单独写 <b>pub</b> 才能从外部构造。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 11,
+  "title": "字段默认<em>私有</em>",
+  "src": "mod back_of_house {\n    pub struct Breakfast {\n        pub toast: String,\n        seasonal_fruit: String,\n    }\n    impl Breakfast {\n        pub fn summer(toast: &str) -> Breakfast {\n            Breakfast {\n                toast: String::from(toast),\n                seasonal_fruit: String::from(\"peaches\"),\n            }\n        }\n    }\n}\n\nfn main() {\n    let mut meal = back_of_house::Breakfast::summer(\"Rye\");\n    meal.toast = String::from(\"Wheat\");\n    meal.seasonal_fruit = String::from(\"mango\");  // 私有字段\n}",
+  "cap": "<b>pub struct</b> 不等于字段公开，字段要逐个写 pub。",
+  "err": "error[E0616]: field `seasonal_fruit` of struct `Breakfast` is private"
+ },
+ {
+  "ep": 9,
+  "slide": 13,
+  "title": "给路径<em>起个短名</em>",
+  "src": "use crate::front_of_house::hosting;\n\npub fn eat_at_restaurant() {\n    hosting::add_to_waitlist();\n}\n\nuse std::collections::HashMap;\nlet mut map = HashMap::new();",
+  "cap": "同名类型可以用 <b>as</b> 起别名：<b>use std::io::Result as IoResult;</b>",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 14,
+  "title": "use 只管<em>当前</em>作用域",
+  "src": "use std::collections::HashMap;\n\nmod child {\n    pub fn build() {\n        // 父模块的 use 不会自动带进子模块\n        let mut m = HashMap::new();\n        m.insert(\"k\", 1);\n    }\n}\n\nfn main() {\n    child::build();\n}",
+  "cap": "子模块要自己 <b>use</b>，或写 <b>super::</b> / <b>crate::</b> 路径。",
+  "err": "error[E0433]: failed to resolve: use of undeclared type `HashMap`"
+ },
+ {
+  "ep": 9,
+  "slide": 16,
+  "title": "重导出<em>整理</em>路径",
+  "src": "pub mod front_of_house {\n    pub mod hosting {\n        pub fn add_to_waitlist() {}\n    }\n}\n\n// 把深层路径重导出成扁平的对外名字\npub use crate::front_of_house::hosting;\n\npub fn eat_at_restaurant() {\n    hosting::add_to_waitlist();\n}",
+  "cap": "<b>pub use</b> 一次完成引入与公开，外部只看到扁平路径。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 18,
+  "title": "mod xxx; 找<em>同名文件</em>",
+  "src": "// src/lib.rs\nmod front_of_house;\npub use crate::front_of_house::hosting;\n\n// src/front_of_house.rs\npub mod hosting;\n\n// src/front_of_house/hosting.rs\npub fn add_to_waitlist() {}",
+  "cap": "文件树和模块树一一对应；<b>src/main.rs</b> 与 <b>src/lib.rs</b> 可以同时存在。",
+  "err": ""
+ },
+ {
+  "ep": 9,
+  "slide": 19,
+  "title": "mod 报 <em>E0583</em>",
+  "src": "// src/main.rs —— 只写了声明，却忘了建对应文件\nmod garden;\n\nfn main() {\n    garden::water();\n}",
+  "cap": "编译器会提示去建 <b>src/garden.rs</b> 或 <b>src/garden/mod.rs</b>。",
+  "err": "error[E0583]: file not found for module `garden`"
+ },
+ {
+  "ep": 9,
+  "slide": 21,
+  "title": "依赖也在<em>模块树</em>里",
+  "src": "# Cargo.toml\n[dependencies]\nrand = \"0.8\"\n\n// src/main.rs\nuse rand::Rng;\nlet n = rand::thread_rng().gen_range(1..=100);",
+  "cap": "工作空间 <b>workspace</b> 可以管理多个包，第 14 章会展开。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 4,
+  "title": "三种集合<em>一起用</em>",
+  "src": "use std::collections::HashMap;\n\nfn main() {\n    let mut nums = vec![1, 2, 3];\n    nums.push(4);\n\n    let mut text = String::from(\"Rust\");\n    text.push_str(\" 集合\");\n\n    let mut scores = HashMap::new();\n    scores.insert(String::from(\"Blue\"), 10);\n\n    println!(\"{nums:?} / {text} / {:?}\", scores.get(\"Blue\"));\n}",
+  "cap": "三者都要 <b>mut</b> 才能改；<b>get</b> 返回 Option，不是值本身。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 6,
+  "title": "len 不是<em>容量</em>",
+  "src": "fn main() {\n    let mut v: Vec<i32> = Vec::with_capacity(3);\n    println!(\"初始 len={} cap={}\", v.len(), v.capacity());\n    for i in 1..=4 {\n        v.push(i);\n        println!(\"push {i} 后 len={} cap={}\", v.len(), v.capacity());\n    }\n}",
+  "cap": "<b>len</b> 是元素数，<b>capacity</b> 是已申请空间，满了会扩容搬迁。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 7,
+  "title": "vec! / push / <em>pop</em>",
+  "src": "let mut v: Vec<i32> = Vec::new();\nv.push(5);\nv.push(6);\n\nlet v2 = vec![1, 2, 3];\nlet last = v.pop();      // Option<i32>",
+  "cap": "Vec 离开作用域时，<b>它和里面所有元素一起被 drop</b>。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 8,
+  "title": "忘了<em>标 mut</em>",
+  "src": "fn main() {\n    let v = vec![1, 2, 3];\n    v.push(4);\n    println!(\"{v:?}\");\n}",
+  "cap": "改成 <b>let mut v</b> 才能调用 push。",
+  "err": "error[E0596]: cannot borrow `v` as mutable, as it is not declared as mutable"
+ },
+ {
+  "ep": 10,
+  "slide": 10,
+  "title": "索引 vs <em>get</em>",
+  "src": "let v = vec![1, 2, 3, 4, 5];\n\nlet third = &v[2];               // 3，越界会 panic\nmatch v.get(2) {\n    Some(x) => println!(\"{x}\"),\n    None    => println!(\"没有这个下标\"),\n}",
+  "cap": "注意 <b>&amp;v[2] 是不可变借用</b>，此时再 push 会因为借用冲突而编译失败。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 11,
+  "title": "引用没用完<em>别 push</em>",
+  "src": "fn main() {\n    let mut v = vec![1, 2, 3];\n    let first = &v[0];\n    v.push(4);\n    println!(\"第一个是 {first}\");\n}",
+  "cap": "<b>push</b> 可能扩容，编译器禁止此时同时持有不可变引用。",
+  "err": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable"
+ },
+ {
+  "ep": 10,
+  "slide": 13,
+  "title": "&amp;v / &amp;mut v / <em>into_iter</em>",
+  "src": "for i in &v { println!(\"{i}\"); }\n\nfor i in &mut v { *i += 50; }   // 解引用后修改\n\nfor i in v { println!(\"{i}\"); } // v 被消耗",
+  "cap": "遍历时不能同时修改同一个 Vec，编译器会拒绝。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 14,
+  "title": "collect 要<em>标注</em>",
+  "src": "fn main() {\n    let doubled = vec![1, 2, 3]\n        .into_iter()\n        .map(|x| x * 2)\n        .collect();\n    println!(\"{doubled:?}\");\n}",
+  "cap": "写成 <b>let doubled: Vec&lt;i32&gt;</b> 或 <b>collect::&lt;Vec&lt;_&gt;&gt;()</b>。",
+  "err": "error[E0282]: type annotations needed"
+ },
+ {
+  "ep": 10,
+  "slide": 16,
+  "title": "不能<em>按下标取</em>",
+  "src": "fn main() {\n    let s = String::from(\"你好 Rust\");\n    println!(\"字节数：{}\", s.len());\n    for b in s.bytes() {\n        print!(\"{b:02x} \");\n    }\n    println!();\n    for c in s.chars() {\n        print!(\"[{c}]\");\n    }\n    println!();\n    println!(\"切片 &s[0..3] = {}\", &s[0..3]);\n}",
+  "cap": "<b>s[0]</b> 不合法；<b>&s[0..3]</b> 必须停在字符边界上。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 17,
+  "title": "push_str / + / <em>format!</em>",
+  "src": "let mut s = String::from(\"foo\");\ns.push_str(\"bar\");\n\nlet s1 = String::from(\"Hello, \");\nlet s2 = String::from(\"world!\");\nlet s3 = s1 + &s2;      // s1 被移动，s2 仍可用\n\nlet s4 = format!(\"{s3}-{s2}\");",
+  "cap": "<b>format!</b> 不取得任何参数的所有权，拼接多段时优先用它。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 18,
+  "title": "两个 &str <em>不能加</em>",
+  "src": "fn main() {\n    let greeting = \"Hello, \" + \"world!\";\n    println!(\"{greeting}\");\n}",
+  "cap": "左边改成 <b>String::from(\"Hello, \")</b> 即可。",
+  "err": "error[E0369]: cannot add `&str` to `&str`"
+ },
+ {
+  "ep": 10,
+  "slide": 20,
+  "title": "insert / get / <em>entry</em>",
+  "src": "use std::collections::HashMap;\n\nlet mut scores = HashMap::new();\nscores.insert(String::from(\"Blue\"), 10);\n\nif let Some(score) = scores.get(\"Blue\") {\n    println!(\"{score}\");\n}\n\nlet count = scores.entry(String::from(\"Red\")).or_insert(0);\n*count += 1;",
+  "cap": "实现 <b>Hash</b> 和 <b>Eq</b> 的类型才能当键；String 可以，f32 不行。",
+  "err": ""
+ },
+ {
+  "ep": 10,
+  "slide": 21,
+  "title": "entry <em>少查一次</em>",
+  "src": "use std::collections::HashMap;\n\nfn main() {\n    let text = \"hello world hello\";\n    let mut counts: HashMap<&str, i32> = HashMap::new();\n    for word in text.split_whitespace() {\n        let count = counts.entry(word).or_insert(0);\n        *count += 1;\n    }\n    println!(\"{counts:?}\");\n    println!(\"hello 出现 {:?} 次\", counts.get(\"hello\"));\n}",
+  "cap": "<b>or_insert</b> 返回值的可变引用，<b>*count</b> 解引用后自增。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 4,
+  "title": "把崩溃<em>写成测试</em>",
+  "src": "fn divide(a: i32, b: i32) -> i32 {\n    if b == 0 {\n        panic!(\"除数不能为零\");\n    }\n    a / b\n}\n\n#[cfg(test)]\nmod tests {\n    use super::divide;\n\n    #[test]\n    #[should_panic(expected = \"除数不能为零\")]\n    fn rejects_zero() {\n        divide(10, 0);\n    }\n}",
+  "cap": "<b>cargo test</b> 跑它；<b>use super::divide</b> 能引父模块私有函数。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 6,
+  "title": "展开还是<em>直接终止</em>",
+  "src": "fn main() {\n    panic!(\"这里出了无法继续的问题\");\n}\n\n// 命令行查看调用栈\n$ RUST_BACKTRACE=1 cargo run",
+  "cap": "release 构建常把 panic 设成 <b>abort</b>，配合系统服务减少清理开销。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 7,
+  "title": "发布版<em>直接终止</em>",
+  "src": "# Cargo.toml\n[profile.release]\npanic = \"abort\"\nstrip = true\n\n# 命令行：用 release 产物验证，别用 cargo run\n# cargo build --release\n# ls -lh target/release/xxx",
+  "cap": "<b>panic = \"abort\"</b> 跳过展开清理，产物更小、行为更简单。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 9,
+  "title": "Ok 或 <em>Err</em>",
+  "src": "use std::fs::File;\n\nlet f = File::open(\"hello.txt\");\nlet f = match f {\n    Ok(file) => file,\n    Err(error) => panic!(\"打开文件失败：{error:?}\"),\n};",
+  "cap": "因为 Result 在预导入模块里，<b>不需要写 Result::</b> 前缀。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 10,
+  "title": "别忘了 <em>Err</em> 分支",
+  "src": "use std::fs::File;\n\nfn main() {\n    let f = File::open(\"hello.txt\");\n    match f {\n        Ok(file) => println!(\"打开成功：{file:?}\"),\n    }\n}",
+  "cap": "Result 有两个变体，漏掉 <b>Err</b> 就编译不过。",
+  "err": "error[E0004]: non-exhaustive patterns: `Err(_)` not covered"
+ },
+ {
+  "ep": 11,
+  "slide": 12,
+  "title": "unwrap 与 <em>expect</em>",
+  "src": "let f = File::open(\"hello.txt\").unwrap();\n\nlet f = File::open(\"hello.txt\")\n    .expect(\"hello.txt 应该随项目一起提供\");",
+  "cap": "<b>unwrap</b> 的默认报错信息很难定位，正式代码优先 <b>expect</b> 或显式处理。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 13,
+  "title": "E 得<em>Debug</em>才行",
+  "src": "struct MyError;\n\nfn main() {\n    let r: Result<i32, MyError> = Err(MyError);\n    println!(\"{}\", r.unwrap());\n}",
+  "cap": "<b>unwrap</b> 崩溃时要打印 E，所以要求 E 实现 Debug。",
+  "err": "error[E0277]: `MyError` doesn't implement `Debug`"
+ },
+ {
+  "ep": 11,
+  "slide": 15,
+  "title": "问号运算符 <em>?</em>",
+  "src": "use std::io::{self, Read};\nuse std::fs::File;\n\nfn read_username_from_file() -> Result<String, io::Error> {\n    let mut s = String::new();\n    File::open(\"hello.txt\")?.read_to_string(&mut s)?;\n    Ok(s)\n}",
+  "cap": "函数返回类型必须是 <b>Result</b>（或 Option 等兼容类型），否则 ? 无法使用。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 16,
+  "title": "末尾别忘<em>包 Ok</em>",
+  "src": "use std::io::{self, Read};\nuse std::fs::File;\n\nfn read_username() -> Result<String, io::Error> {\n    let mut s = String::new();\n    File::open(\"hello.txt\")?.read_to_string(&mut s)?;\n    s                       // 忘了包 Ok\n}",
+  "cap": "改成 <b>Ok(s)</b>；<b>?</b> 成功时只取值，不负责包装。",
+  "err": "error[E0308]: mismatched types"
+ },
+ {
+  "ep": 11,
+  "slide": 17,
+  "title": "? 不是<em>哪里都能写</em>",
+  "src": "use std::error::Error;\nuse std::fs::File;\n\nfn main() -> Result<(), Box<dyn Error>> {\n    let _f = File::open(\"hello.txt\")?;\n    Ok(())\n}",
+  "cap": "<b>Box&lt;dyn Error&gt;</b> 是「任意错误类型」的常用写法，适合示例和小型工具。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 18,
+  "title": "void 里<em>用不了 ?</em>",
+  "src": "use std::fs::File;\n\nfn main() {\n    let _f = File::open(\"hello.txt\")?;\n}",
+  "cap": "把 main 改成返回 <b>Result&lt;(), Box&lt;dyn Error&gt;&gt;</b> 即可。",
+  "err": "error[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option`"
+ },
+ {
+  "ep": 11,
+  "slide": 19,
+  "title": "错误靠 <em>From</em> 转换",
+  "src": "use std::error::Error;\nuse std::fs::File;\n\nfn open_and_check(path: &str) -> Result<(), Box<dyn Error>> {\n    let _f = File::open(path)?;   // io::Error 经 From 装箱\n    Ok(())\n}\n\nfn main() -> Result<(), Box<dyn Error>> {\n    open_and_check(\"hello.txt\")?;\n    Ok(())\n}",
+  "cap": "<b>Box&lt;dyn Error&gt;</b> 是任意错误类型的常用容器，转换靠 From。",
+  "err": ""
+ },
+ {
+  "ep": 11,
+  "slide": 21,
+  "title": "把决定权<em>交回去</em>",
+  "src": "use std::fs;\nuse std::io;\n\npub fn read_config(path: &str) -> Result<String, io::Error> {\n    let text = fs::read_to_string(path)?;\n    if text.trim().is_empty() {\n        return Err(io::Error::new(io::ErrorKind::InvalidData, \"配置内容为空\"));\n    }\n    Ok(text)\n}\n\nfn main() {\n    match read_config(\"config.txt\") {\n        Ok(text) => println!(\"读到 {} 字节\", text.len()),\n        Err(e) => eprintln!(\"读配置失败：{e}\"),\n    }\n}",
+  "cap": "库只返回 <b>Err</b>，怎么处理由 <b>main</b> 里的调用方决定。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 4,
+  "title": "推断不了就<em>显式写</em>",
+  "src": "fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {\n    let mut largest = list[0];\n    for &item in list {\n        if item > largest {\n            largest = item;\n        }\n    }\n    largest\n}\n\nfn main() {\n    let nums = vec![34, 50, 25];\n    let chars = vec!['y', 'm', 'a'];\n    println!(\"{}\", largest(&nums));\n    println!(\"{}\", largest::<char>(&chars));\n}",
+  "cap": "<b>largest::&lt;char&gt;</b> 是 turbofish，显式把 T 钉成 char。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 5,
+  "title": "别为每种类型<em>抄一遍</em>",
+  "src": "fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {\n    let mut largest = list[0];\n    for &item in list {\n        if item > largest { largest = item; }\n    }\n    largest\n}\n\nlet nums = vec![34, 50, 25];\nlet chars = vec!['y', 'm', 'a'];",
+  "cap": "<b>T: PartialOrd + Copy</b> 叫 trait bound：T 必须能比较大小、且能复制。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 6,
+  "title": "缺 <em>Copy</em> 约束",
+  "src": "fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {\n    let mut largest = list[0];\n    for &item in list {\n        if item > largest {\n            largest = item;\n        }\n    }\n    largest\n}\n\nfn main() {\n    let words = vec![String::from(\"a\"), String::from(\"b\")];\n    println!(\"{}\", largest(&words));\n}",
+  "cap": "<b>String: PartialOrd</b> 成立，但 <b>String: Copy</b> 不成立。",
+  "err": "error[E0277]: the trait bound `String: Copy` is not satisfied"
+ },
+ {
+  "ep": 12,
+  "slide": 8,
+  "title": "结构体和<em>枚举</em>也能带参数",
+  "src": "struct Point<T, U> { x: T, y: U }\n\nlet a = Point { x: 5, y: 10 };\nlet b = Point { x: 1, y: 2.5 };\n\nimpl<T> Point<T, T> {\n    fn x(&self) -> &T { &self.x }\n}",
+  "cap": "impl 后面也要写 <b>&lt;T&gt;</b>；可以只对某些具体类型实现方法，比如 <b>impl Point&lt;f32, f32&gt;</b>。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 9,
+  "title": "部分方法<em>看类型</em>",
+  "src": "struct Point<T, U> { x: T, y: U }\n\nimpl<T> Point<T, T> {\n    fn x(&self) -> &T { &self.x }\n}\n\nfn main() {\n    let p = Point { x: 5, y: 2.5 };\n    println!(\"{}\", p.x());\n}",
+  "cap": "<b>x()</b> 只在两个字段同类型时存在。",
+  "err": "error[E0599]: no method named `x` found for struct `Point<i32, f64>` in the current scope"
+ },
+ {
+  "ep": 12,
+  "slide": 12,
+  "title": "编译期<em>各生成一份</em>",
+  "src": "fn identity<T>(x: T) -> T { x }\n\nfn main() {\n    let a = identity(5i32);     // 生成一份 identity_i32\n    let b = identity(\"hi\");     // 再生成一份 identity_str\n    println!(\"{a} {b}\");\n}\n\n// 单态化等价于手写两份：\n// fn identity_i32(x: i32) -> i32 { x }\n// fn identity_str(x: &str) -> &str { x }",
+  "cap": "每个具体类型各一份专用代码，<b>无虚表、可内联</b>。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 13,
+  "title": "定义<em>共同行为</em>",
+  "src": "pub trait Summary {\n    fn summarize(&self) -> String;\n\n    fn default_hint(&self) -> String {\n        String::from(\"（阅读更多…）\")   // 默认实现\n    }\n}",
+  "cap": "trait 里的方法<em>可以只有签名</em>，由实现者补齐；也可以带默认方法体。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 14,
+  "title": "默认实现<em>可以覆盖</em>",
+  "src": "pub trait Summary {\n    fn summarize(&self) -> String;\n\n    fn hint(&self) -> String {\n        String::from(\"（阅读更多…）\")\n    }\n}\n\npub struct Tweet { pub content: String }\n\nimpl Summary for Tweet {\n    fn summarize(&self) -> String {\n        format!(\"@alice: {}\", self.content)\n    }\n    // hint 不写，用默认实现\n}\n\nfn main() {\n    let t = Tweet { content: String::from(\"hello\") };\n    println!(\"{} / {}\", t.summarize(), t.hint());\n}",
+  "cap": "<b>hint</b> 沿用默认实现，<b>summarize</b> 必须补齐。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 16,
+  "title": "impl Trait <em>for</em> Type",
+  "src": "pub struct NewsArticle { pub headline: String }\n\nimpl Summary for NewsArticle {\n    fn summarize(&self) -> String {\n        format!(\"{}\", self.headline)\n    }\n}\n\nlet article = NewsArticle { headline: String::from(\"Rust 1.98 发布\") };\narticle.summarize();",
+  "cap": "这条叫<em>孤儿规则</em>，保证不同 crate 不会给同一个类型实现同名 trait 而冲突。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 18,
+  "title": "约束写<em>在哪里</em>",
+  "src": "pub fn notify(item: &impl Summary) {\n    println!(\"{}\", item.summarize());\n}\n\n// 等价的 trait bound 写法\npub fn notify<T: Summary>(item: &T) { /* ... */ }\n\n// 两个参数必须是同一类型\npub fn pair<T: Summary>(a: &T, b: &T) {}",
+  "cap": "<b>impl Trait</b> 适合简单场景；多参数、多重约束时用泛型更清楚。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 19,
+  "title": "缺 <em>Display</em>",
+  "src": "use std::fmt::Display;\n\nfn notify<T: Display>(item: T) {\n    println!(\"公告：{item}\");\n}\n\nstruct Config { port: u16 }\n\nfn main() {\n    notify(Config { port: 8080 });\n}",
+  "cap": "给 <b>Config</b> 实现 Display，或把约束换成 Debug。",
+  "err": "error[E0277]: the trait bound `Config: Display` is not satisfied"
+ },
+ {
+  "ep": 12,
+  "slide": 20,
+  "title": "where 让签名<em>清爽</em>",
+  "src": "use std::fmt::{Debug, Display};\n\nfn compare_and_print<T, U>(t: &T, u: &U) -> bool\nwhere\n    T: Display + PartialOrd,\n    U: Debug + Clone,\n{\n    println!(\"t = {t}, u = {u:?}\");\n    true\n}\n\nfn main() {\n    let result = compare_and_print(&5, &vec![1, 2, 3]);\n    println!(\"{result}\");\n}",
+  "cap": "<b>where</b> 与写在泛型参数后等价，只让签名更好读。",
+  "err": ""
+ },
+ {
+  "ep": 12,
+  "slide": 21,
+  "title": "约束多了<em>换写法</em>",
+  "src": "fn some_function<T, U>(t: &T, u: &U) -> i32\nwhere\n    T: Display + Clone,\n    U: Clone + Debug,\n{\n    // ...\n    0\n}\n\nimpl<T: Display + PartialOrd> Pair<T> {\n    fn cmp_display(&self) { /* ... */ }\n}",
+  "cap": "还可以用 <b>条件实现</b>：只有 T 满足约束时，Pair&lt;T&gt; 才有某个方法。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 3,
+  "title": "返回局部变量<em>必然</em>失败",
+  "src": "fn bad() -> &str {\n    let s = String::from(\"临时\");\n    &s\n}",
+  "cap": "返回指向 <b>s</b> 的引用；<b>s</b> 在函数末尾就被丢弃。",
+  "err": "error[E0515]: cannot return value referencing local variable `s`"
+ },
+ {
+  "ep": 13,
+  "slide": 5,
+  "title": "编译器<em>看不出</em>哪个还活着",
+  "src": "fn longest(x: &str, y: &str) -> &str {\n    if x.len() > y.len() { x } else { y }\n}",
+  "cap": "报错：<b>missing lifetime specifier</b> —— 编译器无法推断返回值的生命周期。",
+  "err": "error[E0106]: missing lifetime specifier"
+ },
+ {
+  "ep": 13,
+  "slide": 6,
+  "title": "输出<em>跟着谁</em>要写清",
+  "src": "fn first<'a>(x: &'a str, y: &str) -> &'a str {\n    let _ = y;\n    x\n}\n\nfn main() {\n    let s = String::from(\"hello world\");\n    let word = first(&s, \"unused\");\n    println!(\"{word}\");\n}",
+  "cap": "输出显式绑定 <b>x</b>；<b>y</b> 交由省略规则推断。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 7,
+  "title": "较短那方<em>说了算</em>",
+  "src": "fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {\n    if x.len() > y.len() { x } else { y }\n}\n\nfn main() {\n    let outer = String::from(\"长长长\");\n    let result;\n    {\n        let inner = String::from(\"短\");\n        result = longest(&outer, &inner);\n    }\n    println!(\"{result}\");\n}",
+  "cap": "<b>inner</b> 的存活期决定了 <b>result</b> 能用多久。",
+  "err": "error[E0597]: `inner` does not live long enough"
+ },
+ {
+  "ep": 13,
+  "slide": 8,
+  "title": "&amp;'a str 读成什么",
+  "src": "&i32          // 普通引用\n&'a i32       // 带显式生命周期的引用\n&'a mut i32   // 带生命周期的可变引用",
+  "cap": "<b>'a</b> 读作「生命周期 a」，写在 &amp; 之后、类型之前。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 9,
+  "title": "最后一次<em>使用</em>为止",
+  "src": "fn main() {\n    let mut v = vec![1, 2, 3];\n    let first = &v[0];\n    println!(\"{first}\");   // 最后一次使用\n    v.push(4);             // 此处借用已经结束，合法\n}",
+  "cap": "Rust 2018 起默认启用 <b>NLL</b>，2024 Edition 沿用。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 11,
+  "title": "告诉编译器<em>返回值跟谁一样久</em>",
+  "src": "fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {\n    if x.len() > y.len() { x } else { y }\n}\n\nlet result;\n{\n    let s2 = String::from(\"xyz\");\n    result = longest(&s1, &s2);\n}   // s2 已失效，result 的生命周期到此为止",
+  "cap": "约束的是<em>输出结果的有效范围</em>，不是给变量续命。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 13,
+  "title": "改<em>数据归属</em>别加标注",
+  "src": "fn owned() -> String {\n    let s = String::from(\"临时\");\n    s\n}\n\nfn literal() -> &'static str {\n    \"常量\"\n}\n\nfn main() {\n    println!(\"{} {}\", owned(), literal());\n}",
+  "cap": "返回<b>所有权</b>或用<b>字面量</b>，都不需要额外标注。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 14,
+  "title": "冒号读作<em>不少于</em>",
+  "src": "fn choose<'a, 'b>(x: &'a str, y: &'b str) -> &'a str\nwhere\n    'b: 'a,\n{\n    if x.len() > y.len() { x } else { y }\n}\n\nfn main() {\n    let s = String::from(\"abcd\");\n    println!(\"{}\", choose(\"ab\", &s));\n}",
+  "cap": "<b>'b: 'a</b> 读作 b 至少和 a 一样久（outlives）。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 17,
+  "title": "字段是<em>引用</em>时",
+  "src": "struct ImportantExcerpt<'a> {\n    part: &'a str,\n}\n\nfn main() {\n    let novel = String::from(\"很久以前…\");\n    let first = novel.split('.').next().unwrap();\n    let i = ImportantExcerpt { part: first };\n}",
+  "cap": "如果结构体<em>拥有</em>数据（用 String），就不需要任何生命周期标注。",
+  "err": ""
+ },
+ {
+  "ep": 13,
+  "slide": 18,
+  "title": "impl 要先<em>声明</em>标记",
+  "src": "struct Excerpt<'a> { part: &'a str }\n\nimpl Excerpt<'a> {\n    fn part(&self) -> &str { self.part }\n}",
+  "cap": "正确写法是 <b>impl&lt;'a&gt; Excerpt&lt;'a&gt;</b>。",
+  "err": "error[E0261]: use of undeclared lifetime name `'a`"
+ },
+ {
+  "ep": 13,
+  "slide": 21,
+  "title": "局部引用<em>变不成</em>静态",
+  "src": "fn leak_it() -> &'static str {\n    let s = String::from(\"局部\");\n    &s\n}",
+  "cap": "标注只是声明，改变不了 <b>s</b> 真正的作用域。",
+  "err": "error[E0597]: `s` does not live long enough"
+ },
+ {
+  "ep": 13,
+  "slide": 22,
+  "title": "泛型 + trait + <em>生命周期</em>",
+  "src": "use std::fmt::Display;\n\nfn longest_with_an_announcement<'a, T>(\n    x: &'a str,\n    y: &'a str,\n    ann: T,\n) -> &'a str\nwhere\n    T: Display,\n{\n    println!(\"公告：{ann}\");\n    if x.len() > y.len() { x } else { y }\n}",
+  "cap": "第 10 章到此收束：<b>泛型给灵活性，trait 给能力约束，生命周期给引用范围</b>。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 3,
+  "title": "失败输出<em>已经写好</em>答案",
+  "src": "running 1 test\ntest tests::exploration ... FAILED\n\nfailures:\n---- tests::exploration stdout ----\nthread 'tests::exploration' panicked at src/lib.rs:8:9:\nassertion `left == right` failed\n  left: 5\n right: 4",
+  "cap": "<b>assert_eq!</b> 失败会打印左右值与精确行号。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 6,
+  "title": "自定义类型<em>缺了</em>什么",
+  "src": "struct Secret(i32);\n\n#[test]\nfn compare() {\n    let a = Secret(1);\n    let b = Secret(2);\n    assert_eq!(a, b);\n}",
+  "cap": "给类型补上 <b>#[derive(Debug, PartialEq)]</b> 即可。",
+  "err": "error[E0277]: `Secret` doesn't implement `std::fmt::Debug`"
+ },
+ {
+  "ep": 14,
+  "slide": 8,
+  "title": "从<em>失败</em>开始",
+  "src": "#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn exploration() {\n        let result = 2 + 2;\n        assert_eq!(result, 4);\n    }\n}",
+  "cap": "<b>#[cfg(test)]</b> 让这个模块只在 cargo test 时编译，正式构建里不带它。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 9,
+  "title": "期望消息要<em>写准</em>",
+  "src": "fn checked_get(v: &[i32], i: usize) -> i32 {\n    if i >= v.len() { panic!(\"下标越界：{i}\"); }\n    v[i]\n}\n\n#[test]\n#[should_panic(expected = \"下标越界\")]\nfn out_of_range() {\n    checked_get(&[1, 2, 3], 99);\n}",
+  "cap": "<b>expected</b> 只做子串匹配，取一个稳定的关键字即可。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 10,
+  "title": "用问号<em>省掉</em>铺垫",
+  "src": "#[test]\nfn parse_config() -> Result<(), String> {\n    let cfg = std::fs::read_to_string(\"config.toml\")\n        .map_err(|e| format!(\"读配置失败：{e}\"))?;\n    assert!(cfg.contains(\"port\"), \"配置里缺 port：{cfg:?}\");\n    Ok(())\n}",
+  "cap": "返回 <b>Result</b> 的测试可用 <b>?</b>，Err 即视为失败。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 11,
+  "title": "几种<em>常用断言</em>",
+  "src": "assert!(rect.width > 0, \"宽度必须为正：{:?}\", rect);\n\n#[test]\n#[should_panic(expected = \"下标越界\")]\nfn should_fail() {\n    Guess::new(200);\n}\n\n#[test]\nfn it_works() -> Result<(), String> {\n    if 2 + 2 == 4 { Ok(()) } else { Err(String::from(\"算错了\")) }\n}",
+  "cap": "测试函数也可以返回 <b>Result</b>，返回 Err 即视为失败，此时可用 <b>?</b>。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 13,
+  "title": "同名函数<em>两套实现</em>",
+  "src": "#[cfg(test)]\nfn now() -> u64 { 0 }\n\n#[cfg(not(test))]\nfn now() -> u64 {\n    std::time::SystemTime::now()\n        .duration_since(std::time::UNIX_EPOCH)\n        .unwrap()\n        .as_secs()\n}",
+  "cap": "<b>#[cfg(not(test))]</b> 保证正式构建里只剩真实实现。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 15,
+  "title": "cfg(test) 的<em>意义</em>",
+  "src": "pub fn add_two(a: i32) -> i32 {\n    internal_adder(a, 2)\n}\n\nfn internal_adder(a: i32, b: i32) -> i32 { a + b }\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    #[test]\n    fn internal() { assert_eq!(internal_adder(2, 2), 4); }\n}",
+  "cap": "是否测私有函数有争议，但 Rust 至少<em>不阻止</em>你这么做。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 18,
+  "title": "tests/ 下的<em>独立 crate</em>",
+  "src": "// tests/integration_test.rs\nuse adder::add_two;\n\n#[test]\nfn it_adds_two() {\n    assert_eq!(add_two(2), 4);\n}\n\n// 只跑某一个集成测试文件\n$ cargo test --test integration_test",
+  "cap": "二进制项目（只有 main.rs）没法被外部 use，业务逻辑应放进 <b>lib.rs</b>。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 20,
+  "title": "正常错误<em>都测到</em>",
+  "src": "pub fn divide(a: i32, b: i32) -> Result<i32, String> {\n    if b == 0 { Err(String::from(\"除数不能为 0\")) } else { Ok(a / b) }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n    #[test]\n    fn ok() { assert_eq!(divide(10, 2), Ok(5)); }\n    #[test]\n    fn zero() { assert!(divide(1, 0).is_err()); }\n    #[test]\n    #[should_panic(expected = \"除数不能为 0\")]\n    fn unwrap_zero() { divide(1, 0).unwrap(); }\n}",
+  "cap": "正常值、错误值、崩溃消息，三层各守一条。",
+  "err": ""
+ },
+ {
+  "ep": 14,
+  "slide": 21,
+  "title": "常用<em>命令行参数</em>",
+  "src": "$ cargo test                       # 全部\n$ cargo test add_two               # 名字过滤\n$ cargo test -- --nocapture        # 显示打印\n$ cargo test -- --test-threads=1   # 单线程\n$ cargo test -- --ignored          # 只跑被忽略的",
+  "cap": "注意 <b>--</b> 之后的参数是传给测试二进制的，不是给 Cargo 的。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 6,
+  "title": "遇到乱码会<em>直接崩</em>",
+  "src": "use std::env;\n\n// env::args() 遇到非 UTF-8 参数会 panic\nlet raw: Vec<_> = env::args_os().collect();\nfor a in &raw {\n    println!(\"{a:?}\");   // OsString 可无损保存\n}",
+  "cap": "<b>args_os</b> 返回 OsString，适合不能假设编码的场合。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 7,
+  "title": "目标类型<em>推不出</em>",
+  "src": "use std::env;\n\nlet args = env::args().collect();\nprintln!(\"{}\", args.len());",
+  "cap": "正确写法是 <b>let args: Vec&lt;String&gt; = ...</b>。",
+  "err": "error[E0282]: type annotations needed"
+ },
+ {
+  "ep": 15,
+  "slide": 8,
+  "title": "env::args 返回<em>迭代器</em>",
+  "src": "use std::env;\n\nfn main() {\n    let args: Vec<String> = env::args().collect();\n    let query = &args[1];\n    let file_path = &args[2];\n    println!(\"搜索 {query}，文件 {file_path}\");\n}\n\n$ cargo run -- rust poem.txt",
+  "cap": "注意 <b>cargo run --</b> 后面的参数才是传给程序的，不是给 Cargo 的。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 9,
+  "title": "别在库里<em>直接崩</em>",
+  "src": "use std::error::Error;\nuse std::fs;\n\nfn read(path: &str) -> Result<String, Box<dyn Error>> {\n    let text = fs::read_to_string(path)?;\n    Ok(text)\n}",
+  "cap": "<b>?</b> 把 io::Error 自动转成 <b>Box&lt;dyn Error&gt;</b>。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 10,
+  "title": "三样<em>缺一不可</em>",
+  "src": "use std::process;\n\nif let Err(e) = minigrep::run(config) {\n    eprintln!(\"程序出错：{e}\");\n    process::exit(1);\n}\n\n$ cargo run -- to nope.txt > out.txt 2> err.txt\n$ echo $?",
+  "cap": "标准输出给结果，标准错误给诊断，<b>exit(1)</b> 表示失败。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 11,
+  "title": "先跑通<em>主流程</em>",
+  "src": "use std::fs;\n\nlet contents = fs::read_to_string(file_path)\n    .expect(\"应该能读取这个文件\");\n\nprintln!(\"文件内容：\n{contents}\");",
+  "cap": "第一版用 expect 没问题，<b>后面会换成返回 Result 的正式错误处理</b>。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 12,
+  "title": "参数与<em>错误</em>归位",
+  "src": "struct Config { query: String, file_path: String, ignore_case: bool }\n\nimpl Config {\n    fn build(args: &[String]) -> Result<Config, &'static str> {\n        if args.len() < 3 { return Err(\"参数不足\"); }\n        Ok(Config {\n            query: args[1].clone(),\n            file_path: args[2].clone(),\n            ignore_case: env::var(\"CASE_INSENSITIVE\").is_ok(),\n        })\n    }\n}\n\nfn run(config: Config) -> Result<(), Box<dyn Error>> { /* ... */ Ok(()) }",
+  "cap": "把 <b>clone</b> 用在这里是合理的：参数只解析一次，换来获得所有权、避免生命周期标注。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 14,
+  "title": "别用 is_ok <em>糊弄</em>",
+  "src": "use std::env;\n\nmatch env::var(\"CASE_INSENSITIVE\") {\n    Ok(v) => println!(\"开关值 {v}\"),\n    Err(env::VarError::NotPresent) => println!(\"未设置\"),\n    Err(env::VarError::NotUnicode(_)) => eprintln!(\"值不是 UTF-8\"),\n}",
+  "cap": "<b>VarError</b> 的两个变体分别对应未设置与非法编码。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 15,
+  "title": "search 是<em>纯函数</em>",
+  "src": "pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {\n    contents.lines()\n        .filter(|line| line.contains(query))\n        .collect()\n}\n\npub fn search_case_insensitive<'a>(\n    query: &str, contents: &'a str,\n) -> Vec<&'a str> {\n    let query = query.to_lowercase();\n    contents.lines()\n        .filter(|line| line.to_lowercase().contains(&query))\n        .collect()\n}",
+  "cap": "返回值是 <b>Vec&lt;&amp;'a str&gt;</b>：行切片借自 contents，所以要标生命周期。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 16,
+  "title": "去掉就<em>立刻报错</em>",
+  "src": "pub fn search(query: &str, contents: &str) -> Vec<&str> {\n    contents.lines()\n        .filter(|l| l.contains(query))\n        .collect()\n}",
+  "cap": "把 contents 与返回值标成同一个 <b>'a</b> 即可。",
+  "err": "error[E0106]: missing lifetime specifier"
+ },
+ {
+  "ep": 15,
+  "slide": 17,
+  "title": "每行都在<em>重新分配</em>",
+  "src": "pub fn search_case_insensitive<'a>(\n    query: &str, contents: &'a str,\n) -> Vec<&'a str> {\n    let query = query.to_lowercase();   // 只转一次\n    contents.lines()\n        .filter(|l| l.to_lowercase().contains(&query))\n        .collect()\n}",
+  "cap": "查询词提到循环外；每行的 <b>to_lowercase</b> 仍会分配。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 18,
+  "title": "先写<em>失败的测试</em>",
+  "src": "#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn case_sensitive() {\n        let query = \"duct\";\n        let contents = \"Rust:\nsafe, fast, productive.\nPick three.\nDuct tape.\";\n        assert_eq!(vec![\"safe, fast, productive.\"], search(query, contents));\n    }\n\n    #[test]\n    fn case_insensitive() { /* ... */ }\n}",
+  "cap": "测试放在 <b>src/lib.rs</b> 里，业务逻辑也从 main.rs 挪到库，方便复用。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 19,
+  "title": "两个<em>工程细节</em>",
+  "src": "let ignore_case = env::var(\"CASE_INSENSITIVE\").is_ok();\n\n$ CASE_INSENSITIVE=1 cargo run -- to poem.txt\n$ cargo run -- to poem.txt > output.txt   # 错误仍在屏幕\n\nif let Err(e) = run(config) {\n    eprintln!(\"程序出错：{e}\");\n    std::process::exit(1);\n}",
+  "cap": "<b>stdout 给结果，stderr 给诊断</b>，这是命令行工具的基本礼仪。",
+  "err": ""
+ },
+ {
+  "ep": 15,
+  "slide": 23,
+  "title": "四条命令<em>走一遍</em>",
+  "src": "$ cargo test\n$ cargo run -- duct poem.txt\n$ CASE_INSENSITIVE=1 cargo run -- to poem.txt\n$ cargo run -- to nope.txt > out.txt 2> err.txt; echo $?",
+  "cap": "测试全绿 + 三条运行路径 + 查看退出码，缺一不可。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 3,
+  "title": "第二次调用<em>就锁死</em>",
+  "src": "let example = |x| x;\nlet s = example(String::from(\"hi\"));\nlet n = example(5);",
+  "cap": "第一次调用把参数类型固定为 <b>String</b>。",
+  "err": "error[E0308]: mismatched types"
+ },
+ {
+  "ep": 16,
+  "slide": 5,
+  "title": "能捕获环境的<em>匿名函数</em>",
+  "src": "let x = 4;\nlet equal_to_x = |z| z == x;   // 捕获了 x\n\nlet add_one = |x: i32| -> i32 { x + 1 };\nprintln!(\"{}\", equal_to_x(4));  // true",
+  "cap": "闭包和函数不同：<b>能借用或拿走外围变量</b>。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 6,
+  "title": "传参用 impl Fn，<em>存起来</em>用装箱",
+  "src": "fn apply_twice(f: impl Fn(i32) -> i32, x: i32) -> i32 {\n    f(f(x))\n}\n\nlet add = |x| x + 1;\nassert_eq!(apply_twice(add, 1), 3);\n\nlet fs: Vec<Box<dyn Fn(i32) -> i32>> = vec![\n    Box::new(|x| x + 1),\n    Box::new(|x| x * 2),\n];",
+  "cap": "<b>impl Fn</b> 单态化零成本；<b>Box&lt;dyn Fn&gt;</b> 才能统一存放。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 7,
+  "title": "只借<em>用到的</em>那个",
+  "src": "struct State { name: String, count: i32 }\n\nfn main() {\n    let mut s = State { name: String::from(\"a\"), count: 0 };\n    let mut bump = || s.count += 1;   // 只可变借用 count\n    let label = &s.name;              // 仍可不可变借用 name\n    bump();\n    println!(\"{label}\");\n}",
+  "cap": "2021 起的<b>不相交捕获</b>，2024 Edition 沿用。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 10,
+  "title": "转移的可能<em>是副本</em>",
+  "src": "fn main() {\n    let n = 5;\n    let c = move || println!(\"{n}\");\n    c();\n    println!(\"{n}\");                 // i32 是 Copy，仍可用\n\n    let s = String::from(\"hi\");\n    let c2 = move || println!(\"{s}\");\n    c2();\n    println!(\"{s}\");                 // 所有权已移走\n}",
+  "cap": "<b>Copy</b> 类型被复制；非 Copy 类型才是真正转移。",
+  "err": "error[E0382]: borrow of moved value: `s`"
+ },
+ {
+  "ep": 16,
+  "slide": 11,
+  "title": "强制<em>转移所有权</em>",
+  "src": "use std::thread;\n\nlet v = vec![1, 2, 3];\nlet handle = thread::spawn(move || {\n    println!(\"{v:?}\");   // v 的所有权已进闭包\n});\nhandle.join().unwrap();",
+  "cap": "不加 move 时闭包借用 v，编译器会拒绝：<b>借用值可能活得不够久</b>。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 12,
+  "title": "next 是<em>唯一必需方法</em>",
+  "src": "let v1 = vec![1, 2, 3];\nlet mut iter = v1.iter();\nassert_eq!(iter.next(), Some(&1));\nassert_eq!(iter.next(), Some(&2));\n\nfor val in &v1 { println!(\"{val}\"); }   // for 循环本身就是语法糖",
+  "cap": "<b>迭代器是惰性的</b>：不调用消费方法，什么都不会发生。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 13,
+  "title": "只要写 <em>next</em> 一个",
+  "src": "struct Counter { count: u32 }\n\nimpl Iterator for Counter {\n    type Item = u32;\n    fn next(&mut self) -> Option<Self::Item> {\n        if self.count < 3 {\n            self.count += 1;\n            Some(self.count)\n        } else {\n            None\n        }\n    }\n}\n\nlet sum: u32 = Counter { count: 0 }.sum();\nassert_eq!(sum, 6);",
+  "cap": "<b>sum</b>、<b>map</b> 等方法都来自默认实现。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 15,
+  "title": "map / filter / <em>take</em>",
+  "src": "let v = vec![1, 2, 3, 4, 5];\nlet result: Vec<i32> = v.iter()\n    .map(|x| x * 2)\n    .filter(|x| *x > 4)\n    .take(2)\n    .collect();",
+  "cap": "链式写法读起来像数据流水线，<b>collect 之后才真正开始跑</b>。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 16,
+  "title": "不消费<em>一行不跑</em>",
+  "src": "let v = vec![1, 2, 3];\nlet it = v.iter().map(|x| {\n    println!(\"处理 {x}\");     // 不 collect 就永远不打印\n    x * 2\n});\nprintln!(\"只搭好管道\");\nlet out: Vec<_> = it.collect();   // 到这里才真正执行",
+  "cap": "适配器惰性，<b>collect</b> 这类消费器才触发计算。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 17,
+  "title": "目标类型<em>省不掉</em>",
+  "src": "let v = vec![1, 2, 3];\nlet out = v.iter().map(|x| x * 2).collect();",
+  "cap": "写成 <b>Vec&lt;_&gt;</b> 类型标注或 <b>collect::&lt;Vec&lt;_&gt;&gt;()</b>。",
+  "err": "error[E0282]: type annotations needed"
+ },
+ {
+  "ep": 16,
+  "slide": 18,
+  "title": "collect / sum / <em>find</em>",
+  "src": "let total: i32 = v.iter().sum();\n\nlet names: Vec<String> = lines.iter()\n    .map(|l| l.to_uppercase())\n    .collect();\n\nif let Some(found) = v.iter().find(|&&x| x == 3) {\n    println!(\"找到 {found}\");\n}",
+  "cap": "<b>collect 常需要类型标注</b>，编译器无法从上下文推断要收成哪种集合。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 19,
+  "title": "fold / any / <em>zip</em>",
+  "src": "let v = vec![1, 2, 3, 4];\nlet total = v.iter().fold(0, |acc, x| acc + x);\nlet has_even = v.iter().any(|x| x % 2 == 0);\nlet pairs: Vec<_> = v.iter().zip(['a', 'b', 'c', 'd']).collect();\nlet squares: Vec<_> = v.iter().map(|x| x * x).take(2).collect();",
+  "cap": "<b>any</b> / <b>all</b> 短路；<b>zip</b> 以较短一方为准。",
+  "err": ""
+ },
+ {
+  "ep": 16,
+  "slide": 21,
+  "title": "零成本不是<em>口号</em>",
+  "src": "impl Config {\n    fn build(mut args: impl Iterator<Item = String>)\n        -> Result<Config, &'static str>\n    {\n        args.next();   // 跳过程序名\n        let query = args.next().ok_or(\"缺少查询词\")?;\n        let file_path = args.next().ok_or(\"缺少文件路径\")?;\n        Ok(Config { query, file_path,\n                    ignore_case: env::var(\"CASE_INSENSITIVE\").is_ok() })\n    }\n}",
+  "cap": "<b>impl Iterator</b> 作参数，直接接收 env::args()，不再 collect 成 Vec。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 4,
+  "title": "profile 决定<em>哪一档</em>",
+  "src": "$ cargo build              # target/debug\n$ cargo build --release    # target/release\n$ cargo test --release     # 发布档下跑测试\n$ cargo doc --no-deps --open",
+  "cap": "<b>--release</b> 选用 release profile，其余默认走 dev。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 5,
+  "title": "两套<em>构建配置</em>",
+  "src": "[profile.dev]\nopt-level = 0\n\n[profile.release]\nopt-level = 3\nlto = true\ncodegen-units = 1",
+  "cap": "<b>lto</b> 打开链接期优化、<b>codegen-units = 1</b> 换更好的优化，代价都是编译更慢。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 6,
+  "title": "dev 也能<em>单独调</em>",
+  "src": "[profile.dev]\nopt-level = 1\ndebug = true\n\n[profile.release]\nopt-level = 3\nlto = \"thin\"\ncodegen-units = 1\npanic = \"abort\"\noverflow-checks = false",
+  "cap": "只覆写写出的项；<b>lto</b> 与 <b>codegen-units</b> 换优化但拖慢编译。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 7,
+  "title": "用 inherits <em>继承</em>",
+  "src": "[profile.profiling]\ninherits = \"release\"\ndebug = true\n\n[profile.bench]\ninherits = \"release\"\nlto = true\n\n$ cargo build --profile profiling",
+  "cap": "自定义 profile 必须写明 <b>inherits</b>，产物在 target 下同名目录。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 8,
+  "title": "/// 会变成 <em>API 文档</em>",
+  "src": "/// 给指定的数字加一。\n///\n/// # Examples\n///\n/// ```\n/// let arg = 5;\n/// let answer = my_crate::add_one(arg);\n/// assert_eq!(6, answer);\n/// ```\npub fn add_one(x: i32) -> i32 { x + 1 }",
+  "cap": "常见的 <b># Examples / # Panics / # Errors</b> 小节，是社区惯例。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 9,
+  "title": "no_run 只<em>编译不跑</em>",
+  "src": "/// 把两个整数相加。\n///\n/// # Panics\n///\n/// 当前实现不会 panic。\n///\n/// # Examples\n/// ```\n/// assert_eq!(my_crate::add(2, 3), 5);\n/// ```\n///\n/// ```no_run\n/// let _ = std::fs::read_to_string(\"/etc/hosts\");\n/// ```\npub fn add(a: i32, b: i32) -> i32 { a + b }",
+  "cap": "<b>no_run</b> 只编译；<b>ignore</b> 跳过；<b>should_panic</b> 声明该崩。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 11,
+  "title": "pub use <em>重导出</em>",
+  "src": "// src/lib.rs\npub mod kinds;\npub mod utils;\npub use self::kinds::PrimaryColor;\npub use self::utils::mix;\n\n// 用户侧\nuse art::PrimaryColor;   // 不用写 art::kinds::PrimaryColor",
+  "cap": "重导出<em>不改变内部结构</em>，只是换一个更友好的对外门牌号。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 12,
+  "title": "把范围<em>收窄</em>",
+  "src": "pub mod api {\n    pub fn public_fn() {}\n    pub(crate) fn inside_fn() {}\n    fn private_fn() {}\n}\n\npub use api::public_fn;",
+  "cap": "<b>pub(crate)</b> 只在本包可见；<b>pub use</b> 不改内部结构。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 13,
+  "title": "发布前<em>先预演</em>",
+  "src": "$ cargo package --list\n$ cargo publish --dry-run\n$ cargo package --allow-dirty",
+  "cap": "<b>--dry-run</b> 能提前发现漏文件、缺元数据这类问题。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 15,
+  "title": "发布前<em>补全字段</em>",
+  "src": "[package]\nname = \"my_crate\"\nversion = \"0.1.0\"\nedition = \"2024\"\ndescription = \"一句话说清这个库做什么\"\nlicense = \"MIT OR Apache-2.0\"\nreadme = \"README.md\"\nkeywords = [\"cli\", \"text\"]\ncategories = [\"command-line-utilities\"]",
+  "cap": "<b>keywords</b> 最多五个；<b>categories</b> 要用官方分类。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 17,
+  "title": "一个仓库<em>多个包</em>",
+  "src": "# 根目录 Cargo.toml\n[workspace]\nmembers = [\"adder\", \"add_one\", \"cli\"]\nresolver = \"2\"\n\n$ cargo build                  # 全部\n$ cargo test -p add_one        # 只测某个包",
+  "cap": "工作空间内互相依赖用<b>路径依赖</b>：<b>add_one = { path = \"../add_one\" }</b>。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 18,
+  "title": "cargo install 与<em>自定义子命令</em>",
+  "src": "$ cargo install ripgrep\n$ cargo install cargo-edit\n$ cargo add serde          # 由 cargo-edit 提供\n\n$ cargo --list             # 查看所有可用子命令",
+  "cap": "这是 Cargo 的<em>扩展机制</em>，社区工具常以 cargo-xxx 命名发布。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 19,
+  "title": "只写<em>一次</em>版本",
+  "src": "[workspace]\nmembers = [\"adder\", \"cli\"]\nresolver = \"2\"\n\n[workspace.dependencies]\nserde = \"1\"\nanyhow = \"1\"\n\n# 成员清单里：\n# [dependencies]\n# serde = { workspace = true }",
+  "cap": "<b>resolver = \"2\"</b> 是 2021 起推荐的解析策略。",
+  "err": ""
+ },
+ {
+  "ep": 17,
+  "slide": 21,
+  "title": "发布出去就<em>收不回</em>",
+  "src": "$ cargo test\n$ cargo publish --dry-run    # 本地预演打包\n$ cargo publish\n$ cargo yank --vers 1.0.1    # 撤回（不删除）",
+  "cap": "<b>--dry-run</b> 能提前发现漏文件、缺元数据这类问题。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 4,
+  "title": "只有<em>一个指针</em>宽",
+  "src": "use std::mem::size_of;\n\nfn main() {\n    println!(\"{}\", size_of::<Box<i32>>());   // 64 位平台上是 8\n    println!(\"{}\", size_of::<i32>());        // 4\n    let b = Box::new([0u8; 1024]);\n    println!(\"{}\", std::mem::size_of_val(&b));   // 仍是 8\n}",
+  "cap": "数据在<b>堆上</b>，栈上只留一个指针。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 6,
+  "title": "不装箱<em>算不出大小</em>",
+  "src": "enum List {\n    Cons(i32, List),\n    Nil,\n}",
+  "cap": "改成 <b>Cons(i32, Box&lt;List&gt;)</b> 即可断开无限大小。",
+  "err": "error[E0072]: recursive type `List` has infinite size"
+ },
+ {
+  "ep": 18,
+  "slide": 7,
+  "title": "引用会<em>一路降级</em>",
+  "src": "fn takes_str(s: &str) { println!(\"{s}\"); }\n\nfn main() {\n    let boxed = Box::new(String::from(\"hello\"));\n    takes_str(&boxed);       // &Box<String> 一路转成 &str\n    let n = Box::new(5);\n    assert_eq!(*n + 1, 6);   // 用星号取出 i32\n}",
+  "cap": "<b>Deref</b> 让引用沿链自动转换；取值仍需 <b>*</b>。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 8,
+  "title": "把数据放到<em>堆</em>上",
+  "src": "enum List {\n    Cons(i32, Box<List>),\n    Nil,\n}\n\nuse List::{Cons, Nil};\nlet list = Cons(1, Box::new(Cons(2, Box::new(Nil))));\n\nlet b = Box::new(5);\nprintln!(\"{b}\");   // 自动解引用",
+  "cap": "Box 只有一个指针大小的开销，<b>不做引用计数、不做运行时检查</b>。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 9,
+  "title": "trait 对象<em>动态派发</em>",
+  "src": "trait Draw { fn draw(&self) -> String; }\nstruct Circle;\nstruct Square;\nimpl Draw for Circle { fn draw(&self) -> String { String::from(\"圆\") } }\nimpl Draw for Square { fn draw(&self) -> String { String::from(\"方\") } }\n\nfn main() {\n    let shapes: Vec<Box<dyn Draw>> = vec![\n        Box::new(Circle), Box::new(Square),\n    ];\n    for s in &shapes { println!(\"{}\", s.draw()); }\n}",
+  "cap": "<b>Box&lt;dyn Trait&gt;</b> 擦除具体类型，代价是一次动态派发。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 10,
+  "title": "局部变量<em>逆序</em>释放",
+  "src": "struct Tag(&'static str);\nimpl Drop for Tag {\n    fn drop(&mut self) { println!(\"释放 {}\", self.0); }\n}\n\nfn main() {\n    let _a = Tag(\"a\");\n    let _b = Tag(\"b\");\n}",
+  "cap": "输出顺序是<b>先 b 后 a</b>；提前释放用 <b>std::mem::drop</b>。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 11,
+  "title": "自定义<em>解引用行为</em>",
+  "src": "use std::ops::Deref;\n\nstruct MyBox<T>(T);\n\nimpl<T> Deref for MyBox<T> {\n    type Target = T;\n    fn deref(&self) -> &T { &self.0 }\n}\n\nlet x = MyBox(String::from(\"hello\"));\nfn hello(s: &str) { println!(\"{s}\"); }\nhello(&x);     // &MyBox<String> → &String → &str",
+  "cap": "<b>DerefMut</b> 对应可变引用的自动转换。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 12,
+  "title": "离开作用域时<em>做点事</em>",
+  "src": "struct CustomSmartPointer { data: String }\n\nimpl Drop for CustomSmartPointer {\n    fn drop(&mut self) {\n        println!(\"正在清理 {}\", self.data);\n    }\n}\n\nlet c = CustomSmartPointer { data: String::from(\"资源\") };\ndrop(c);    // 提前释放",
+  "cap": "实现了 <b>Drop</b> 的类型不能再实现 <b>Copy</b>，两者语义冲突。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 13,
+  "title": "Rc <em>不能</em>跨线程",
+  "src": "use std::rc::Rc;\n\nfn main() {\n    let a = Rc::new(String::from(\"共享\"));\n    println!(\"{}\", Rc::strong_count(&a));     // 1\n    let b = Rc::clone(&a);\n    let c = Rc::clone(&a);\n    println!(\"{}\", Rc::strong_count(&a));     // 3\n    drop(c);\n    println!(\"{} {}\", Rc::strong_count(&a), b); // 2\n}",
+  "cap": "克隆只增计数；跨线程要换 <b>Arc</b> 的原子计数。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 15,
+  "title": "一份数据<em>多个所有者</em>",
+  "src": "use std::rc::Rc;\n\nenum List { Cons(i32, Rc<List>), Nil }\nlet a = Rc::new(List::Cons(5, Rc::new(List::Nil)));\nlet b = List::Cons(10, Rc::clone(&a));\nlet c = List::Cons(15, Rc::clone(&a));\n\nprintln!(\"计数 = {}\", Rc::strong_count(&a));",
+  "cap": "<b>Rc 只用于单线程</b>；多线程要用 <b>Arc&lt;T&gt;</b>，它用原子计数。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 16,
+  "title": "冲突会<em>直接崩溃</em>",
+  "src": "use std::cell::RefCell;\n\nfn main() {\n    let x = RefCell::new(vec![1, 2, 3]);\n    let a = x.borrow();\n    assert!(x.try_borrow_mut().is_err());   // 不崩溃的写法\n    drop(a);                                // 及时归还\n    if let Ok(mut v) = x.try_borrow_mut() {\n        v.push(4);\n    }\n    assert_eq!(*x.borrow(), vec![1, 2, 3, 4]);\n}",
+  "cap": "<b>borrow_mut</b> 冲突会 panic；<b>try_borrow_mut</b> 返回 Result。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 18,
+  "title": "把检查<em>挪到运行时</em>",
+  "src": "use std::cell::RefCell;\n\nlet x = RefCell::new(5);\nlet a = x.borrow();\nlet b = x.borrow();        // 多个不可变借用，OK\n// let c = x.borrow_mut(); // 运行时 panic：already borrowed\ndrop(a); drop(b);\n*x.borrow_mut() += 1;",
+  "cap": "常和 Rc 搭配：<b>Rc&lt;RefCell&lt;T&gt;&gt;</b> 表示「多人共享、且可修改」。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 19,
+  "title": "让析构<em>保持沉默</em>",
+  "src": "use std::rc::Rc;\nuse std::cell::RefCell;\n\nstruct Node { next: RefCell<Option<Rc<Node>>> }\nimpl Drop for Node {\n    fn drop(&mut self) { println!(\"Node 被释放\"); }\n}\n\nfn main() {\n    let a = Rc::new(Node { next: RefCell::new(None) });\n    let b = Rc::new(Node { next: RefCell::new(Some(Rc::clone(&a))) });\n    *a.next.borrow_mut() = Some(Rc::clone(&b));   // 成环\n    println!(\"计数 {}\", Rc::strong_count(&a));\n}",
+  "cap": "父向边改 <b>Weak</b> 后，<b>upgrade</b> 返回 Option 才能取到。",
+  "err": ""
+ },
+ {
+  "ep": 18,
+  "slide": 20,
+  "title": "用 <em>Weak</em> 打破",
+  "src": "use std::rc::{Rc, Weak};\nuse std::cell::RefCell;\n\nstruct Node {\n    value: i32,\n    parent: RefCell<Weak<Node>>,\n    children: RefCell<Vec<Rc<Node>>>,\n}\n\nlet leaf = Rc::new(Node { value: 3, /* ... */ });\nprintln!(\"父节点：{:?}\", leaf.parent.borrow().upgrade());",
+  "cap": "<b>upgrade()</b> 返回 Option&lt;Rc&lt;T&gt;&gt;：父节点还在就取到，不在就是 None。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 4,
+  "title": "Rc 跨线程<em>当场被拦</em>",
+  "src": "use std::rc::Rc;\nuse std::thread;\n\nlet counter = Rc::new(0);\nlet handles: Vec<_> = (0..2)\n    .map(|_| {\n        let c = Rc::clone(&counter);\n        thread::spawn(move || { let _ = *c; })\n    })\n    .collect();\nfor h in handles { h.join().unwrap(); }",
+  "cap": "spawn 要求闭包 <b>Send</b>；Rc 的计数不是原子的，被判为 !Send。",
+  "err": "error[E0277]: `Rc<i32>` cannot be sent between threads safely"
+ },
+ {
+  "ep": 19,
+  "slide": 6,
+  "title": "闭包要满足<em>Send 与 'static</em>",
+  "src": "// std::thread::spawn 的约束（简化）：\n//   F: FnOnce() -> T + Send + 'static\n//   T: Send + 'static\nuse std::thread;\n\nfn main() {\n    let owned = String::from(\"hi\");\n    let h: thread::JoinHandle<usize> = thread::spawn(move || {\n        println!(\"{owned}\");\n        owned.len()\n    });\n    println!(\"拿到 {}\", h.join().unwrap());\n}",
+  "cap": "FnOnce 表示闭包只跑一次；<b>Send</b> 保证能安全转移到另一线程；'static 约束捕获方式。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 8,
+  "title": "thread::spawn + <em>move</em>",
+  "src": "use std::thread;\n\nlet v = vec![1, 2, 3];\nlet handle = thread::spawn(move || {\n    println!(\"新线程拿到 {v:?}\");\n});\n\nprintln!(\"主线程继续干活\");",
+  "cap": "不加 move 时闭包会<b>借用</b> v，编译器报「借用的值可能活得不够久」。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 9,
+  "title": "scope <em>免去 clone</em>",
+  "src": "use std::thread;\n\nlet data = vec![1, 2, 3, 4];\nthread::scope(|s| {\n    for chunk in data.chunks(2) {\n        s.spawn(move || println!(\"{chunk:?}\"));\n    }\n});\nprintln!(\"作用域结束后 data 还在：{data:?}\");",
+  "cap": "scope 内的线程可借用非 'static 数据；<b>作用域结束前会自动 join 全部线程</b>。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 11,
+  "title": "join 返回 <em>Result</em>",
+  "src": "let handle = thread::spawn(|| {\n    for i in 1..5 { println!(\"hi {i}\"); }\n});\n\nhandle.join().unwrap();   // 等它跑完再继续",
+  "cap": "把 join 的位置往前挪或往后挪，就能观察两个线程输出如何交错。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 12,
+  "title": "channel 有<em>发送端和接收端</em>",
+  "src": "use std::sync::mpsc;\nuse std::thread;\n\nlet (tx, rx) = mpsc::channel();\nthread::spawn(move || {\n    tx.send(String::from(\"hi\")).unwrap();\n});\n\nlet msg = rx.recv().unwrap();   // 阻塞等待\nprintln!(\"收到 {msg}\");",
+  "cap": "<b>send 会拿走值的所有权</b>，发送后原线程就不能再用它了。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 13,
+  "title": "clone tx 就行",
+  "src": "let tx1 = tx.clone();\nthread::spawn(move || {\n    for val in vec![1, 2, 3] { tx1.send(val).unwrap(); }\n});\nthread::spawn(move || {\n    for val in vec![4, 5] { tx.send(val).unwrap(); }\n});\ndrop(tx);\n\nfor received in rx { println!(\"{received}\"); }",
+  "cap": "注意最后要 <b>drop(tx)</b>，否则接收端会一直等下去。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 14,
+  "title": "忘了 drop(tx) 会<em>挂住</em>",
+  "src": "use std::sync::mpsc;\nuse std::thread;\nuse std::time::Duration;\n\nlet (tx, rx) = mpsc::channel::<i32>();\nlet tx2 = tx.clone();\nthread::spawn(move || { tx2.send(7).unwrap(); });\ndrop(tx); // 少了这一行，下面的 for 会永远等下去\n\nfor v in rx { println!(\"收到 {v}\"); }\n// 诊断死等改用：rx.recv_timeout(Duration::from_millis(500))",
+  "cap": "for 遍历 rx 要等<b>所有发送端都被丢弃</b>才结束；recv_timeout 能避免无限阻塞。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 16,
+  "title": "Arc&lt;Mutex&lt;T&gt;&gt;",
+  "src": "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nlet counter = Arc::new(Mutex::new(0));\nlet mut handles = vec![];\nfor _ in 0..10 {\n    let c = Arc::clone(&counter);\n    handles.push(thread::spawn(move || {\n        *c.lock().unwrap() += 1;\n    }));\n}\nfor h in handles { h.join().unwrap(); }\nprintln!(\"结果：{}\", *counter.lock().unwrap());",
+  "cap": "<b>lock()</b> 返回 Result；锁由 MutexGuard 持有，离开作用域自动释放。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 17,
+  "title": "panic 让锁<em>中毒</em>",
+  "src": "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nlet m = Arc::new(Mutex::new(vec![1]));\nlet m2 = Arc::clone(&m);\nlet h = thread::spawn(move || {\n    let mut g = m2.lock().unwrap();\n    g.push(2);\n    panic!(\"故意崩\");\n});\nlet _ = h.join(); // 线程 panic，锁被标记为中毒\n\nmatch m.lock() {\n    Ok(g) => println!(\"正常 {g:?}\"),\n    Err(e) => println!(\"中毒，仍能取回 {:?}\", e.into_inner()),\n}",
+  "cap": "lock() 返回 <b>LockResult</b>；中毒时 <b>PoisonError::into_inner()</b> 可取回 MutexGuard。",
+  "err": ""
+ },
+ {
+  "ep": 19,
+  "slide": 21,
+  "title": "AtomicUsize <em>更轻</em>",
+  "src": "use std::sync::Arc;\nuse std::sync::atomic::{AtomicUsize, Ordering};\nuse std::thread;\n\nlet hit = Arc::new(AtomicUsize::new(0));\nlet mut hs = vec![];\nfor _ in 0..8 {\n    let h = Arc::clone(&hit);\n    hs.push(thread::spawn(move || {\n        h.fetch_add(1, Ordering::Relaxed);\n    }));\n}\nfor h in hs { h.join().unwrap(); }\nprintln!(\"共 {} 次\", hit.load(Ordering::Relaxed));",
+  "cap": "<b>Ordering::Relaxed</b> 只保证这一次数值修改原子，不提供跨线程的顺序约束。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 4,
+  "title": "#[tokio::main] <em>做了什么</em>",
+  "src": "#[tokio::main]\nasync fn main() {\n    let v = async { 40 + 2 }.await;\n    println!(\"{v}\");\n}",
+  "cap": "依赖：Cargo.toml 加 <b>tokio = { version = \"1\", features = [\"macros\", \"rt-multi-thread\"] }</b>；该宏展开成运行时 + block_on。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 6,
+  "title": "async fn 返回<em>一个 future</em>",
+  "src": "async fn fetch_data() -> String {\n    String::from(\"数据\")\n}\n\npub trait Future {\n    type Output;\n    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>)\n        -> Poll<Self::Output>;\n}",
+  "cap": "返回值可能是 <b>Poll::Pending</b>（还没好）或 <b>Poll::Ready(T)</b>（完成）。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 7,
+  "title": "返回的是 <em>impl Future</em>",
+  "src": "// 下面两种写法等价\nasync fn answer() -> u32 { 42 }\n\nfn answer_explicit() -> impl std::future::Future<Output = u32> {\n    async { 42 }\n}\n\n// 2024 版中 trait 里的 async fn 走 RPITIT，返回匿名 future",
+  "cap": "async fn 的返回类型是<b>匿名 future</b>，等价于 impl Future&lt;Output = T&gt;。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 9,
+  "title": "future 得有人<em>推进</em>",
+  "src": "#[tokio::main]\nasync fn main() {\n    let data = fetch_data().await;\n    println!(\"{data}\");\n}",
+  "cap": "注意 <b>future 是惰性的</b>：不 await、不交给运行时，它一步都不会执行。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 10,
+  "title": "不 await 就<em>不打印</em>",
+  "src": "#[tokio::main]\nasync fn main() {\n    let fut = async {\n        println!(\"这行会被打印吗？\");\n        7\n    };\n    println!(\"只构造了 future，还没推进\");\n    let v = fut.await; // 到这一步函数体才执行\n    println!(\"拿到 {v}\");\n}",
+  "cap": "依赖：tokio 1.x 开启 <b>macros</b> 与 <b>rt-multi-thread</b>；去掉 .await，第一句 println! 永不输出。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 11,
+  "title": "block_on <em>循环 poll</em>",
+  "src": "use std::future::Future;\nuse std::sync::Arc;\nuse std::task::{Context, Poll, Wake, Waker};\n\nstruct Noop;\nimpl Wake for Noop {\n    fn wake(self: Arc<Self>) {}\n}\n\nfn block_on<F: Future>(fut: F) -> F::Output {\n    let waker = Waker::from(Arc::new(Noop));\n    let mut cx = Context::from_waker(&waker);\n    let mut fut = Box::pin(fut);\n    loop {\n        match fut.as_mut().poll(&mut cx) {\n            Poll::Ready(v) => return v,\n            Poll::Pending => std::thread::yield_now(),\n        }\n    }\n}\n\nfn main() {\n    println!(\"{}\", block_on(async { 40 + 2 }));\n}",
+  "cap": "不依赖任何第三方 crate：<b>std::task::Wake</b> + Box::pin 就能写出最小执行器；真实运行时靠 Waker 唤醒而非忙等。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 12,
+  "title": "join! 而不是<em>排队 await</em>",
+  "src": "async fn a() -> u32 { 1 }\nasync fn b() -> u32 { 2 }\n\n// 串行：总耗时 = a + b\nlet x = a().await;\nlet y = b().await;\n\n// 并发：总耗时 ≈ max(a, b)\nlet (x, y) = tokio::join!(a(), b());",
+  "cap": "<b>try_join!</b> 用于返回 Result 的 future，任一出错就提前返回。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 13,
+  "title": "超时会<em>丢掉另一半</em>",
+  "src": "use tokio::time::{sleep, timeout, Duration};\n\nasync fn write_all() {\n    sleep(Duration::from_millis(50)).await;\n    println!(\"写完了\");\n}\n\n#[tokio::main]\nasync fn main() {\n    // 10ms 就超时，write_all 在 .await 处被 drop，println! 不会执行\n    let _ = timeout(Duration::from_millis(10), write_all()).await;\n}",
+  "cap": "依赖：tokio 1.x 开启 <b>macros / rt / time</b>；落选分支被取消，未完成的状态要能安全丢弃。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 15,
+  "title": "join_all 与 <em>FuturesUnordered</em>",
+  "src": "use futures::future::join_all;\n\nlet futs: Vec<_> = urls.iter().map(|u| fetch(u)).collect();\nlet results = join_all(futs).await;\n\nuse futures::stream::{FuturesUnordered, StreamExt};\nlet mut tasks = FuturesUnordered::new();\nwhile let Some(result) = tasks.next().await {\n    handle(result);\n}",
+  "cap": "join_all 要等<b>全部</b>完成；FuturesUnordered 是<b>完成一个就交出一个</b>。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 16,
+  "title": "一连串的 <em>Future</em>",
+  "src": "use futures::stream::{self, StreamExt};\n\nlet mut st = stream::iter(1..=3).map(|x| async move { x * 2 });\nwhile let Some(v) = st.next().await {\n    println!(\"{v}\");\n}",
+  "cap": "网络分块到达、消息队列消费、定时事件，都很适合用 Stream 建模。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 17,
+  "title": "future 往往是 <em>!Unpin</em>",
+  "src": "let fut = async {\n    println!(\"hi\");\n    1\n};\n// let p = Pin::new(&mut fut); // 编译不过：future 是 !Unpin\nlet p = Box::pin(fut);         // 堆上地址稳定，才能安全 poll\nlet _ = p;",
+  "cap": "<b>Box::pin</b> 把状态机钉在堆上；<b>Pin::new</b> 只适用于实现了 Unpin 的类型。",
+  "err": "error[E0277]: the trait bound `{async block@...}: Unpin` is not satisfied"
+ },
+ {
+  "ep": 20,
+  "slide": 18,
+  "title": "buffer_unordered <em>限并发</em>",
+  "src": "use futures::stream::{self, StreamExt};\n\n#[tokio::main]\nasync fn main() {\n    let mut st = stream::iter(1..=5)\n        .map(|n| async move { n * n })\n        .buffer_unordered(2); // 最多同时推进 2 个\n    while let Some(v) = st.next().await {\n        println!(\"{v}\");\n    }\n}",
+  "cap": "依赖：<b>futures = \"0.3\"</b> 与 tokio 1.x（macros / rt）；buffer_unordered 把在途任务数卡在 n。",
+  "err": ""
+ },
+ {
+  "ep": 20,
+  "slide": 20,
+  "title": "守护让 future <em>不 Send</em>",
+  "src": "use std::sync::Mutex;\n\n#[tokio::main]\nasync fn main() {\n    let m = Mutex::new(0);\n    tokio::spawn(async move {\n        let guard = m.lock().unwrap();\n        tokio::task::yield_now().await;\n        println!(\"{}\", *guard);\n    });\n}",
+  "cap": "依赖：tokio 1.x 开启 <b>macros / rt-multi-thread</b>；守护跨 .await 使 future 不满足 Send。",
+  "err": "error[E0277]: future cannot be sent between threads safely"
+ },
+ {
+  "ep": 21,
+  "slide": 4,
+  "title": "私有字段<em>访问报错</em>",
+  "src": "mod bank {\n    pub struct Account { balance: i32 }\n    impl Account {\n        pub fn new() -> Self { Account { balance: 0 } }\n        pub fn balance(&self) -> i32 { self.balance }\n    }\n}\n\nfn main() {\n    let a = bank::Account::new();\n    println!(\"{}\", a.balance);   // 直接读私有字段\n}",
+  "cap": "字段默认私有；对外只留 pub 方法，才能在不破坏调用方的前提下改内部表示。",
+  "err": "error[E0616]: field `balance` of struct `Account` is private"
+ },
+ {
+  "ep": 21,
+  "slide": 6,
+  "title": "运行时<em>动态分发</em>",
+  "src": "pub trait Draw { fn draw(&self); }\n\npub struct Screen {\n    pub components: Vec<Box<dyn Draw>>,\n}\n\nimpl Screen {\n    pub fn run(&self) {\n        for c in &self.components { c.draw(); }\n    }\n}",
+  "cap": "<b>dyn</b> 关键字强调动态分发；对象必须放在指针后面，因为大小编译期未知。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 7,
+  "title": "impl Trait 与 <em>dyn</em> 的账",
+  "src": "trait Draw { fn draw(&self) -> String; }\nstruct Button;\nimpl Draw for Button {\n    fn draw(&self) -> String { String::from(\"button\") }\n}\n\n// 静态分发：为每个具体类型生成一份代码\nfn render_static<T: Draw>(item: &T) -> String { item.draw() }\n\n// 动态分发：擦掉具体类型，走虚表\nfn render_dyn(item: &dyn Draw) -> String { item.draw() }\n\nfn main() {\n    println!(\"{} {}\", render_static(&Button), render_dyn(&Button));\n}",
+  "cap": "泛型单态化零间接开销但每类型一份机器码；<b>dyn</b> 经虚表间接调用，换来同一段代码处理不同类型。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 10,
+  "title": "泛型方法<em>破坏 dyn 兼容</em>",
+  "src": "trait Encoder {\n    fn encode<T>(&self, value: &T);   // 泛型方法\n    fn name(&self) -> String;\n}\nstruct Json;\nimpl Encoder for Json {\n    fn encode<T>(&self, _v: &T) {}\n    fn name(&self) -> String { String::from(\"json\") }\n}\n\nfn main() {\n    let e: Box<dyn Encoder> = Box::new(Json);\n    println!(\"{}\", e.name());\n}",
+  "cap": "带泛型类型参数的方法无法进虚表；<b>dyn 兼容</b>（旧称对象安全）因此被破坏。",
+  "err": "error[E0038]: the trait `Encoder` is not dyn compatible"
+ },
+ {
+  "ep": 21,
+  "slide": 12,
+  "title": "把状态变成<em>类型</em>",
+  "src": "pub struct Post { content: String }\npub struct DraftPost { content: String }\npub struct PendingReviewPost { content: String }\n\nimpl DraftPost {\n    pub fn request_review(self) -> PendingReviewPost {\n        PendingReviewPost { content: self.content }\n    }\n}\nimpl Post {\n    pub fn content(&self) -> &str { &self.content }\n}",
+  "cap": "<b>self 按值转移</b>：调用状态转换后旧状态对象被消耗，无法再被使用。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 13,
+  "title": "私有构造 + <em>PhantomData</em>",
+  "src": "use std::marker::PhantomData;\n\nstruct Draft;\nstruct Published;\nstruct Post<State> {\n    body: String,\n    state: PhantomData<State>,\n}\n\nimpl Post<Draft> {\n    fn new(body: &str) -> Self {\n        Post { body: body.into(), state: PhantomData }\n    }\n    fn publish(self) -> Post<Published> {\n        Post { body: self.body, state: PhantomData }\n    }\n}\nimpl Post<Published> {\n    fn url(&self) -> String { format!(\"/posts/{}\", self.body.len()) }\n}",
+  "cap": "<b>PhantomData&lt;State&gt;</b> 只带类型信息、不占空间；字段私有，外部无法伪造任意状态。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 16,
+  "title": "模式可能<em>匹配不上</em>吗",
+  "src": "let x = 5;                       // 不可反驳，OK\n// let Some(x) = some_option;    // 编译错误\n\nif let Some(x) = some_option {  // 可反驳，交给 if let\n    println!(\"{x}\");\n}\nwhile let Some(item) = stack.pop() { /* ... */ }",
+  "cap": "错误提示会直接建议你<em>改用 if let 或 match</em>。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 17,
+  "title": "let 触发 <em>E0005</em>",
+  "src": "fn main() {\n    let opt: Option<i32> = Some(7);\n    let Some(x) = opt;   // 可反驳模式放进 let\n    println!(\"{x}\");\n}",
+  "cap": "let 只接受不可反驳模式；E0005 会建议改用 <b>if let</b>、<b>let-else</b> 或 match，例如 <b>let Some(x) = opt else { return; };</b>",
+  "err": "error[E0005]: refutable pattern in local binding: `None` not covered"
+ },
+ {
+  "ep": 21,
+  "slide": 18,
+  "title": "if 里<em>串起模式</em>",
+  "src": "fn handle(input: Option<&str>) {\n    // 2024 Edition（Rust 1.88+）起 let 链稳定\n    if let Some(s) = input\n        && let Ok(n) = s.parse::<i32>()\n        && n > 0\n    {\n        println!(\"正整数 {n}\");\n    }\n    println!(\"匹配吗 {}\", matches!(input, Some(\"ok\")));\n}",
+  "cap": "依赖：Rust 1.88+ 的 <b>2024 Edition</b>（let_chains 已稳定）；旧工具链报 E0658 未稳定。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 19,
+  "title": "一份<em>速查表</em>",
+  "src": "match x {\n    1 | 2 => println!(\"一或二\"),\n    3..=7 => println!(\"三到七\"),\n    Some(v @ 1..=5) => println!(\"小数值 {v}\"),\n    Point { x, .. } => println!(\"只关心 x = {x}\"),\n    _ => (),\n}\n\nmatch num {\n    Some(n) if n < 0 => println!(\"负数\"),\n    Some(n) => println!(\"{n}\"),\n    None => (),\n}",
+  "cap": "<b>..</b> 只能忽略剩余字段，不能写在中间造成歧义。",
+  "err": ""
+ },
+ {
+  "ep": 21,
+  "slide": 20,
+  "title": "@ 绑定 + <em>匹配守卫</em>",
+  "src": "#[derive(Debug)]\nstruct Point { x: i32, y: i32 }\n\nfn classify(p: Point) {\n    match p {\n        Point { x, .. } if x < 0 => println!(\"左半平面：{x}\"),\n        Point { x: a @ 0..=10, y } => println!(\"x={a}, y={y}\"),\n        other => println!(\"其它 {other:?}\"),\n    }\n}\n\nfn main() { classify(Point { x: 7, y: 3 }); }",
+  "cap": "<b>@</b> 一边绑定一边约束；<b>..</b> 忽略剩余字段；守卫只是附加条件，不改变穷尽性检查。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 5,
+  "title": "unsafe 块里照样<em>E0499</em>",
+  "src": "fn main() {\n    let mut v = vec![1, 2, 3];\n    unsafe {\n        let a = &mut v[0];\n        let b = &mut v[1];\n        println!(\"{a} {b}\");\n    }\n}",
+  "cap": "unsafe 块<b>不关闭借用检查</b>：两个可变借用同一 v 依旧触发 E0499。",
+  "err": "error[E0499]: cannot borrow `v` as mutable more than once at a time"
+ },
+ {
+  "ep": 22,
+  "slide": 7,
+  "title": "包一层<em>安全接口</em>",
+  "src": "pub fn split_at_mut(slice: &mut [i32], mid: usize)\n    -> (&mut [i32], &mut [i32])\n{\n    let len = slice.len();\n    let ptr = slice.as_mut_ptr();\n    assert!(mid <= len);\n    unsafe {\n        (std::slice::from_raw_parts_mut(ptr, mid),\n         std::slice::from_raw_parts_mut(ptr.add(mid), len - mid))\n    }\n}",
+  "cap": "这里编译器看不出两段互不重叠，所以用 unsafe 手写，<b>由 assert 和逻辑保证安全</b>。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 8,
+  "title": "长度写错<em>照样编译</em>",
+  "src": "fn bad_slice(data: &[u8]) -> &[u8] {\n    let ptr = data.as_ptr();\n    // 故意把长度放大：能编译，运行却是未定义行为\n    unsafe { std::slice::from_raw_parts(ptr, data.len() + 8) }\n}",
+  "cap": "命令：rustup component add miri --toolchain nightly 后 cargo +nightly miri test；越界读取是 UB，不是编译错误。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 10,
+  "title": "几个<em>读源码会见到</em>的东西",
+  "src": "pub trait Iterator {\n    type Item;                 // 关联类型\n    fn next(&mut self) -> Option<Self::Item>;\n}\n\nuse std::ops::Add;\nimpl Add for Point { type Output = Point; /* ... */ }\n\ntype Kilometers = i32;         // 类型别名\nstruct Meters(i32);            // newtype",
+  "cap": "<b>never type !</b> 表示永不返回，比如 panic! 和 loop { } 的类型。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 11,
+  "title": "<em>!</em> 能转成任意类型",
+  "src": "fn fail(msg: &str) -> ! {\n    panic!(\"{msg}\")\n}\n\nfn choose(flag: bool) -> i32 {\n    if flag { 1 } else { fail(\"走不到\") }\n}\n\nfn main() {\n    let n: u32 = match Some(3) {\n        Some(v) => v,\n        None => return,   // return / break / continue 的类型也是 !\n    };\n    println!(\"{n} {}\", choose(true));\n}",
+  "cap": "<b>never type !</b> 表示永不返回，可强制转换到任意类型；panic! 与发散分支都是 !。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 13,
+  "title": "把<em>行为与代码</em>当参数",
+  "src": "fn add_one(x: i32) -> i32 { x + 1 }\nfn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {\n    f(arg) + f(arg)\n}\ndo_twice(add_one, 5);\n\n#[macro_export]\nmacro_rules! vec {\n    ( $( $x:expr ),* ) => { /* ... */ };\n}",
+  "cap": "宏在<em>编译期展开</em>，能接受不定数量参数，也能生成实现代码。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 14,
+  "title": "macro_rules! 的<em>重复</em>",
+  "src": "#[macro_export]\nmacro_rules! sum {\n    ( $( $x:expr ),* $(,)? ) => {\n        {\n            let mut total = 0;\n            $( total += $x; )*\n            total\n        }\n    };\n}\n\nfn main() {\n    println!(\"{}\", sum!(1, 2, 3, 4));\n}",
+  "cap": "声明宏按片段匹配（<b>expr / ty / ident / tt</b>），<b>$(...)*</b> 做重复，编译期展开且带卫生性。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 17,
+  "title": "channel + <em>Arc&lt;Mutex&gt;</em>",
+  "src": "pub struct ThreadPool {\n    workers: Vec<Worker>,\n    sender: Option<mpsc::Sender<Job>>,\n}\n\ntype Job = Box<dyn FnOnce() + Send + 'static>;\n\nimpl ThreadPool {\n    pub fn execute<F>(&self, f: F)\n    where F: FnOnce() + Send + 'static {\n        let job = Box::new(f);\n        self.sender.as_ref().unwrap().send(job).unwrap();\n    }\n}",
+  "cap": "<b>FnOnce + Send + 'static</b>：任务只跑一次、能跨线程转移、不借用短命数据。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 18,
+  "title": "取完任务<em>先放锁</em>",
+  "src": "use std::sync::{Arc, Mutex};\nuse std::sync::mpsc::Receiver;\n\ntype Job = Box<dyn FnOnce() + Send + 'static>;\n\nfn worker_loop(rx: Arc<Mutex<Receiver<Job>>>) {\n    loop {\n        // 锁住、取出一个任务，语句结束守护即释放\n        let job = rx.lock().unwrap().recv();\n        let job = match job {\n            Ok(job) => job,\n            Err(_) => break,   // 发送端关闭，退出循环\n        };\n        job();                 // 锁外执行，别的 worker 才能同时干活\n    }\n}\n\n// 反例：while let Ok(job) = rx.lock().unwrap().recv() { job(); }\n// 守护活过整个循环体，所有 worker 被串行化",
+  "cap": "锁只用来抢任务，<b>Job 在锁外执行</b>；把 lock() 写进 while let 会让守护活过 job()。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 20,
+  "title": "Drop 里<em>通知并等待</em>",
+  "src": "impl Drop for ThreadPool {\n    fn drop(&mut self) {\n        drop(self.sender.take());\n        for worker in &mut self.workers {\n            if let Some(thread) = worker.thread.take() {\n                thread.join().unwrap();\n            }\n        }\n    }\n}",
+  "cap": "先用 <b>Option::take()</b> 拿走所有权，才能在 &amp;mut self 里移动字段。",
+  "err": ""
+ },
+ {
+  "ep": 22,
+  "slide": 21,
+  "title": "先 drop(sender) 再<em>join</em>",
+  "src": "impl Drop for ThreadPool {\n    fn drop(&mut self) {\n        // 少了 drop(self.sender.take()); —— 通道不关闭，worker 永远等不到结束\n        for worker in &mut self.workers {\n            if let Some(t) = worker.thread.take() {\n                t.join().unwrap();   // 会一直卡在这里\n            }\n        }\n    }\n}",
+  "cap": "先关通道让 recv 返回 Err、worker 退出循环，再 join；<b>Option::take()</b> 才能在 &mut self 里移动字段。",
+  "err": ""
+ }
+]
