@@ -8,9 +8,8 @@
 
 
 fn main() {
-    let total: i64 = (1..=100)
+    let total: i32 = (1..=100)
         .filter(|n| n % 2 == 0)
         .map(|n| n * n)
         .sum();
-    println!("sum of squares of even numbers 1..=100: {}", total);
 }

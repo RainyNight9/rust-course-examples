@@ -3,8 +3,6 @@
 B 站《Rust 程序设计语言》**22 集中文系统课**的配套代码仓库。课程覆盖中文版全书 21 章，
 这里把视频里出现的代码整理成可以直接运行、对照阅读的工程。
 
-- 视频课程：<https://www.bilibili.com/video/BV1Y8W86qEQr/>
-
 - **119 个可运行示例**：位于 `chNN/examples/`，全部通过 `cargo build --workspace --examples`
 - **59 个故意编译失败示例**：位于 `compile-fail/`，用来对照 E0382、E0499 等真实报错
 - **84 段讲解摘录**：位于 `docs/snippets/`，是命令行、Cargo.toml、控制台输出或课程中的代码片段，
@@ -12,10 +10,18 @@ B 站《Rust 程序设计语言》**22 集中文系统课**的配套代码仓库
 
 每个文件头部都标了**视频集数与时间点**，例如 `P05 02:41`，可以直接跳到视频对应位置。
 
+## 配套资料
+
+| 资料 | 位置 | 用途 |
+| --- | --- | --- |
+| [22 集学习手册（Markdown）](docs/学习手册.md) · [PDF 49 页](docs/学习手册.pdf) | `docs/` | 每集的目标、规则、易错点、随堂练习、知识地图与代码索引；PDF 可直接作为「三连领资料」发放 |
+| [示例索引](docs/EXAMPLE_INDEX.md) | `docs/` | 119 个示例 × 视频时间点完整对照 |
+| [6 篇精选图文长文](articles/README.md) | `articles/` | 所有权、借用与生命周期、泛型与 trait、错误处理、并发、异步；供专栏 / 掘金 / 知乎发布引流 |
+
 ## 快速开始
 
 ```bash
-git clone https://github.com/RainyNight9/rust-course-examples
+git clone <你的仓库地址>
 cd rust-course-examples
 cargo check --workspace --all-targets     # 校验全部示例，无需联网
 
@@ -80,8 +86,10 @@ rust-course-examples/
 ├── ch01 … ch22/            # 每集一个 crate，examples/ 下是该文件对应的可运行示例
 ├── compile-fail/           # 故意编译失败的反例 + README（含错误码索引）
 ├── docs/
+│   ├── 学习手册.md / .html / .pdf   # 22 集学习手册（PDF 49 页）
 │   ├── EXAMPLE_INDEX.md    # 全部可运行示例 × 视频时间点对照表
 │   └── snippets/           # 按集整理的命令行 / 配置 / 教学摘录
+├── articles/               # 6 篇精选图文长文 + 发布索引
 ├── tools/                  # 从课程逐镜数据重建本仓库的脚本与原始清单
 ├── LICENSE                 # 中文译本 MIT 许可原文
 ├── LICENSE-UPSTREAM-MIT    # rust-lang/book MIT 许可原文
