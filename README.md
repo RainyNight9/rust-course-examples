@@ -13,7 +13,7 @@ B 站《Rust 程序设计语言》**22 集中文系统课**的配套代码仓库
 ## 快速开始
 
 ```bash
-git clone <你的仓库地址>
+git clone https://github.com/RainyNight9/rust-course-examples
 cd rust-course-examples
 cargo check --workspace --all-targets     # 校验全部示例，无需联网
 
