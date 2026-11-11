@@ -6,7 +6,7 @@
          non_snake_case)]
 
 fn main() {
-    let flag = true;
+    let flag: bool = true;
     if flag == true {
         println!("on");
     }
