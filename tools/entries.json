@@ -3138,7 +3138,7 @@
  {
   "ep": 19,
   "slide": 16,
-  "title": "Arc&lt;Mutex&lt;T&gt;&gt;",
+  "title": "Arc<Mutex<T>>",
   "base": "p19_s16",
   "src": "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nlet counter = Arc::new(Mutex::new(0));\nlet mut handles = vec![];\nfor _ in 0..10 {\n    let c = Arc::clone(&counter);\n    handles.push(thread::spawn(move || {\n        *c.lock().unwrap() += 1;\n    }));\n}\nfor h in handles { h.join().unwrap(); }\nprintln!(\"结果：{}\", *counter.lock().unwrap());",
   "cap": "lock() 返回 Result；锁由 MutexGuard 持有，离开作用域自动释放。",
@@ -3614,7 +3614,7 @@
  {
   "ep": 22,
   "slide": 17,
-  "title": "channel + Arc&lt;Mutex&gt;",
+  "title": "channel + Arc<Mutex>",
   "base": "p22_s17",
   "src": "pub struct ThreadPool {\n    workers: Vec<Worker>,\n    sender: Option<mpsc::Sender<Job>>,\n}\n\ntype Job = Box<dyn FnOnce() + Send + 'static>;\n\nimpl ThreadPool {\n    pub fn execute<F>(&self, f: F)\n    where F: FnOnce() + Send + 'static {\n        let job = Box::new(f);\n        self.sender.as_ref().unwrap().send(job).unwrap();\n    }\n}",
   "cap": "FnOnce + Send + 'static：任务只跑一次、能跨线程转移、不借用短命数据。",
