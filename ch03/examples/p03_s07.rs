@@ -8,6 +8,7 @@
 use std::io;
 
 fn main() {
+    println!("猜一个的数字：");
     let mut guess = String::new();
     let n = io::stdin()
         .read_line(&mut guess)

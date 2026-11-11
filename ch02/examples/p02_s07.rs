@@ -6,11 +6,10 @@
          non_snake_case)]
 
 fn main() {
-    let name: &str = "Rust";
+    let name = "Rust";
     let year = 2024;
     println!("Hello, {}!", name);
     println!("{0} {1}, {0} again", name, year);
     println!("edition = {year}");
     println!("debug: {:?}", vec![1, 2, 3]);
-    println!("{:#?}", vec![1, 2, 3]);
 }
